@@ -11,6 +11,7 @@ import java.util.List;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.ArticleListFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.HomeFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
 
 public class MainActivity extends AppCompatActivity implements
         HomeFragment.HomeFragmentListener, ArticleListFragment.ArticleListFragmentListener{
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements
     private EditText query;
     private ArrayList<Article> articleList;
     private ArrayList<Article> savedArticles;
+    private Settings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements
 
         this.articleList = new ArrayList<Article>();
         this.savedArticles = new ArrayList<Article>();
-
+        this.settings = new Settings();
     }
 
     @Override
@@ -46,6 +48,11 @@ public class MainActivity extends AppCompatActivity implements
         fragmentTransaction.commit();
     }
 
+
+    @Override
+    public Settings getSettings() {
+        return this.settings;
+    }
 
     @Override
     public void setArticleList(ArrayList<Article> articles) {

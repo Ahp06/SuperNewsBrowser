@@ -31,6 +31,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
 
 
 public class HomeFragment extends Fragment {
@@ -116,6 +117,7 @@ public class HomeFragment extends Fragment {
     }
 
     public interface HomeFragmentListener {
+        Settings getSettings();
         void setArticleList(ArrayList<Article> articles);
         void requestArticleList();
         void requestSavedList();
@@ -141,10 +143,11 @@ public class HomeFragment extends Fragment {
         if (!this.query.getText().toString().equals("")) {
             String query = this.query.getText().toString();
             Log.d("query", "=" + query);
-            //new ArticleHttpRequest().execute(DataHolder.getSettings().applySettings(query));
-        } /*else {
-            Toast.makeText(this, R.string.empty_query, Toast.LENGTH_SHORT).show();
-        }*/
+            new ArticleHttpRequest().execute(mListener.getSettings().applySettings(query));
+
+        } else {
+            Toast.makeText(this.getContext(), R.string.empty_query, Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -152,7 +155,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        this.root = inflater.inflate(R.layout.fragment_home, container, false);
 
         //execute the search if the user presses confirm with the keyboard
         this.query = root.findViewById(R.id.query);
@@ -173,8 +176,7 @@ public class HomeFragment extends Fragment {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //executeQueryWithSettings();
-                mListener.requestArticleList();
+                executeQueryWithSettings();
             }
         });
 
