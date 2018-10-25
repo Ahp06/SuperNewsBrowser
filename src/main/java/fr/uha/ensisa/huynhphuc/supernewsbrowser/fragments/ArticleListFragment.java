@@ -31,7 +31,7 @@ public class ArticleListFragment extends Fragment {
 
     public interface ArticleListFragmentListener {
         List<Article> getArticleList();
-        void saveArticle(Article article);
+        void requestSaveArticle(Article article);
     }
 
     public ArticleListFragment() {
@@ -83,7 +83,7 @@ public class ArticleListFragment extends Fragment {
 
     private class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> {
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             public final View mView;
             public final TextView contentView;
             public final ImageView imageView;
@@ -99,7 +99,10 @@ public class ArticleListFragment extends Fragment {
                 mView = view;
             }
 
-
+            @Override
+            public void onClick(View v) {
+                //GO to the website
+            }
         }
 
         public ArticleListAdapter() {
@@ -114,7 +117,7 @@ public class ArticleListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-            Article article = mListener.getArticleList().get(i);
+            final Article article = mListener.getArticleList().get(i);
 
             //Image downloading
             ArticleImageDownload downloader = new ArticleImageDownload(viewHolder.imageView);
@@ -150,6 +153,13 @@ public class ArticleListFragment extends Fragment {
                             "<p> écrit le : " + dateFormatted + "</p>";
 
             viewHolder.contentView.setText(Html.fromHtml(content));
+
+            viewHolder.save_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.requestSaveArticle(article);
+                }
+            });
 
         }
 

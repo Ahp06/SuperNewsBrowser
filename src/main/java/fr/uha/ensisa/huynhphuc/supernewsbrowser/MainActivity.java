@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void saveArticle(Article article) {
+    public void requestSaveArticle(Article article) {
         this.savedArticles.add(article);
     }
 
