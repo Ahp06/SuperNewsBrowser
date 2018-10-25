@@ -19,33 +19,32 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.utils.ArticleImageDownload;
 
-public class ArticleListFragment extends Fragment {
 
-    private ArticleListFragmentListener mListener;
+public class SavedListFragment extends Fragment {
 
-    public interface ArticleListFragmentListener {
-        List<Article> getArticleList();
-        void saveArticle(Article article);
+    private SavedFragmentListener mListener;
+
+    public interface SavedFragmentListener {
+        ArrayList<Article> getSavedList();
     }
 
-    public ArticleListFragment() {
+
+    public SavedListFragment() {
     }
 
-    public static ArticleListFragment newInstance() {
-        ArticleListFragment fragment = new ArticleListFragment();
+    public static SavedListFragment newInstance() {
+        SavedListFragment fragment = new SavedListFragment();
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -58,7 +57,7 @@ public class ArticleListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new ArticleListAdapter());
+            recyclerView.setAdapter(new SavedListAdapter());
         }
         return view;
     }
@@ -67,11 +66,11 @@ public class ArticleListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ArticleListFragmentListener) {
-            mListener = (ArticleListFragmentListener) context;
+        if (context instanceof SavedFragmentListener) {
+            mListener = (SavedFragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement ArticleListFragmentListener");
+                    + " must implement SavedFragmentListener");
         }
     }
 
@@ -81,43 +80,44 @@ public class ArticleListFragment extends Fragment {
         mListener = null;
     }
 
-    private class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> {
+
+    private class SavedListAdapter extends RecyclerView.Adapter<SavedListAdapter.ViewHolder> {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView contentView;
-            public final ImageView imageView;
-            public final Button save_button;
-            public final Button comment_button;
+            public final TextView contentViewSaved;
+            public final ImageView imageViewSaved;
+            public final Button delete_button;
+            public final Button comment_button_saved;
 
             public ViewHolder(View view) {
                 super(view);
-                contentView = (TextView) view.findViewById(R.id.articleContent);
-                imageView = (ImageView) view.findViewById(R.id.imageView);
-                save_button = (Button) view.findViewById(R.id.save_button);
-                comment_button = (Button) view.findViewById(R.id.comment_button);
+                contentViewSaved = (TextView) view.findViewById(R.id.articleContent_saved);
+                imageViewSaved = (ImageView) view.findViewById(R.id.imageView_saved);
+                delete_button = (Button) view.findViewById(R.id.delete_button);
+                comment_button_saved = (Button) view.findViewById(R.id.saved_comment_button);
                 mView = view;
             }
-
-
         }
 
-        public ArticleListAdapter() {
+        public SavedListAdapter() {
         }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_article, viewGroup, false);
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_saved, viewGroup, false);
             return new ViewHolder(v);
         }
 
+
         @Override
         public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-            Article article = mListener.getArticleList().get(i);
+
+            Article article = mListener.getSavedList().get(i);
 
             //Image downloading
-            ArticleImageDownload downloader = new ArticleImageDownload(viewHolder.imageView);
+            ArticleImageDownload downloader = new ArticleImageDownload(viewHolder.imageViewSaved);
             downloader.download(article.getUrlToImage());
 
 
@@ -149,15 +149,16 @@ public class ArticleListFragment extends Fragment {
                             "</br>" +
                             "<p> écrit le : " + dateFormatted + "</p>";
 
-            viewHolder.contentView.setText(Html.fromHtml(content));
+            viewHolder.contentViewSaved.setText(Html.fromHtml(content));
 
         }
 
         @Override
         public int getItemCount() {
-            return mListener.getArticleList().size();
+            return mListener.getSavedList().size();
         }
-    }
 
+
+    }
 
 }

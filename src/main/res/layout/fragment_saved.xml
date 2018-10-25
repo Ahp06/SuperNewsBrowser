@@ -6,49 +6,50 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageView_saved"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:adjustViewBounds="true"
         android:src="@drawable/ic_library_books_black_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <TextView
-        android:id="@+id/articleContent"
+        android:id="@+id/articleContent_saved"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autoSizeTextType="uniform"
         android:text="TextView"
-        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView_saved"
+        android:autoSizeTextType="uniform"
+        android:textSize="15sp"
+        android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/save_button"
+        android:id="@+id/delete_button"
         android:layout_width="176dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
         android:layout_weight="0"
-        android:text="@string/save_text"
-        app:layout_constraintEnd_toStartOf="@+id/comment_button"
+        android:text="@string/delete_text"
+        app:layout_constraintEnd_toStartOf="@+id/saved_comment_button"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/articleContent" />
+        app:layout_constraintTop_toBottomOf="@+id/articleContent_saved"/>
 
     <Button
-        android:id="@+id/comment_button"
+        android:id="@+id/saved_comment_button"
         android:layout_width="178dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
         android:layout_weight="1"
         android:text="@string/comment_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/articleContent" />
+        app:layout_constraintTop_toBottomOf="@+id/articleContent_saved"/>
+
 </android.support.constraint.ConstraintLayout>

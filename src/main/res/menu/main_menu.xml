@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:color="@color/colorPrimaryDark"
+    tools:ignore="AlwaysShowAction">
+
+    <item
+        android:id="@+id/saved_item"
+        android:icon="@drawable/ic_save_black_24dp"
+        android:title="Saved"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/history_item"
+        android:icon="@drawable/ic_history_black_24dp"
+        android:title="History"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/settings_item"
+        android:icon="@drawable/ic_settings_applications_black_24dp"
+        android:title="Settings"
+        app:showAsAction="always" />
+
+
+</menu>

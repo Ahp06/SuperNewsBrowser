@@ -8,6 +8,9 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -118,12 +121,12 @@ public class HomeFragment extends Fragment {
 
     public interface HomeFragmentListener {
         Settings getSettings();
+
         void setArticleList(ArrayList<Article> articles);
+
         void requestArticleList();
+
         void requestSavedList();
-        void requestHistory();
-        void requestSettings();
-        void requestTopNews();
     }
 
     public HomeFragment() {
@@ -156,6 +159,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         this.root = inflater.inflate(R.layout.fragment_home, container, false);
+        setHasOptionsMenu(true);
 
         //execute the search if the user presses confirm with the keyboard
         this.query = root.findViewById(R.id.query);
@@ -184,6 +188,20 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.saved_item) {
+            mListener.requestSavedList();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onAttach(Context context) {
