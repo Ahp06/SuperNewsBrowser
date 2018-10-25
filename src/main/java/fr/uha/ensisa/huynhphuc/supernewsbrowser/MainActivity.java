@@ -3,26 +3,30 @@ package fr.uha.ensisa.huynhphuc.supernewsbrowser;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.EditText;
+
+import org.w3c.dom.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.ArticleListFragment;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.DatePickerFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.HomeFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SavedListFragment;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SettingsFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
 
 public class MainActivity extends AppCompatActivity implements
-        HomeFragment.HomeFragmentListener, ArticleListFragment.ArticleListFragmentListener, SavedListFragment.SavedFragmentListener {
+        HomeFragment.HomeFragmentListener,
+        ArticleListFragment.ArticleListFragmentListener,
+        SavedListFragment.SavedFragmentListener,
+        SettingsFragment.SettingsFragmentListener,
+        DatePickerFragment.DatePickerFragmentListener {
 
-    private EditText query;
     private ArrayList<Article> articleList;
     private ArrayList<Article> savedArticles;
+    private ArrayList<Comment> comments;
     private Settings settings;
 
     @Override
@@ -30,9 +34,10 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.articleList = new ArrayList<Article>();
-        this.savedArticles = new ArrayList<Article>();
-        this.settings = new Settings();
+        if (this.articleList == null) this.articleList = new ArrayList<Article>();
+        if (this.savedArticles == null) this.savedArticles = new ArrayList<Article>();
+        if (this.comments == null) this.comments = new ArrayList<Comment>();
+        if (this.settings == null) this.settings = new Settings();
 
         this.replaceFragment(HomeFragment.newInstance());
     }
@@ -58,8 +63,28 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void requestComment() {
+        //this.replaceFragment(CommentFragment.newInstance());
+    }
+
+    @Override
     public Settings getSettings() {
         return this.settings;
+    }
+
+    @Override
+    public void updateSettings(Settings settings) {
+        this.settings = settings;
+    }
+
+    @Override
+    public void requestHome() {
+        this.replaceFragment(HomeFragment.newInstance());
+    }
+
+    @Override
+    public void requestSettings() {
+        this.replaceFragment(SettingsFragment.newInstance());
     }
 
     @Override
@@ -81,5 +106,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public ArrayList<Article> getSavedList() {
         return this.savedArticles;
+    }
+
+    @Override
+    public void requestFromChange(String from) {
+        this.getSettings().setFrom(from);
+    }
+
+    @Override
+    public void requestToChange(String to) {
+        this.getSettings().setTo(to);
     }
 }

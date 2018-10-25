@@ -121,11 +121,9 @@ public class HomeFragment extends Fragment {
 
     public interface HomeFragmentListener {
         Settings getSettings();
-
+        void requestSettings();
         void setArticleList(ArrayList<Article> articles);
-
         void requestArticleList();
-
         void requestSavedList();
     }
 
@@ -200,6 +198,12 @@ public class HomeFragment extends Fragment {
         if (item.getItemId() == R.id.saved_item) {
             mListener.requestSavedList();
         }
+
+        if (item.getItemId() == R.id.settings_item) {
+            mListener.requestSettings();
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
 
