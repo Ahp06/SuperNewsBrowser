@@ -7,11 +7,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
+import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
 
 @SuppressLint("ValidFragment")
 public class DatePickerFragment extends DialogFragment
@@ -22,14 +25,12 @@ public class DatePickerFragment extends DialogFragment
     private int year;
     private int month;
     private int day;
-    private String from;
-    private String to;
 
     private DatePickerFragmentListener mListener;
 
-    public interface DatePickerFragmentListener {
-        void requestFromChange(String from);
-        void requestToChange(String to);
+    public interface DatePickerFragmentListener{
+        void updateFrom(String from);
+        void updateTo(String to);
     }
 
     public DatePickerFragment(String id, String date) throws ParseException {
@@ -44,7 +45,7 @@ public class DatePickerFragment extends DialogFragment
         this.year = calendar.get(Calendar.YEAR);
         this.month = calendar.get(Calendar.MONTH);
         this.day = calendar.get(Calendar.DAY_OF_MONTH);
-        this.date = year + "-" + (month+1) + "-" + day;
+        this.date = year + "-" + (month + 1) + "-" + day;
     }
 
     @Override
@@ -74,51 +75,41 @@ public class DatePickerFragment extends DialogFragment
     /**
      * Set the date data member of this class according to news API date format.
      * The month value is incremented because in the Android SDK, months are indexed starting at 0.
+     *
      * @param view
      * @param year
      * @param month
      * @param day
      */
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        this.date = year + "-" + (month+1) + "-" + day ;
+        this.date = year + "-" + (month + 1) + "-" + day;
 
-        if(this.id.equals("from")){
-            //from_date_choosen.setText("" + this.getDate());
-            from = "" + this.getDate();
-            mListener.requestFromChange(from);
+        if (this.id.equals("from")) {
+            mListener.updateFrom(this.getDate());
+            ((TextView) ((SettingsFragment) this.getFragmentManager()
+                    .findFragmentById(R.id.fragment_container))
+                    .getView()
+                    .findViewById(R.id.from_date_choosen))
+                    .setText(this.getDate());
         } else {
-            //to_date_choosen.setText("" + this.getDate());
-            to = "" + this.getDate();
-            mListener.requestToChange(to);
+            mListener.updateTo(this.getDate());
+            ((TextView) ((SettingsFragment) this.getFragmentManager()
+                    .findFragmentById(R.id.fragment_container))
+                    .getView()
+                    .findViewById(R.id.to_date_choosen))
+                    .setText(this.getDate());
         }
-
     }
 
     public String getDate() {
         return date;
     }
 
-    public String getFrom() {
-        return from;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public String getTo() {
-        return to;
-    }
-
-    public void setTo(String to) {
-        this.to = to;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof HomeFragment.HomeFragmentListener) {
-            mListener = (DatePickerFragment.DatePickerFragmentListener) context;
+        if (context instanceof DatePickerFragmentListener) {
+            mListener = (DatePickerFragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement DatePickerFragmentListener");

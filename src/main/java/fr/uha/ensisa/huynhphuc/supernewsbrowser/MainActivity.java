@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import org.w3c.dom.Comment;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements
         ArticleListFragment.ArticleListFragmentListener,
         SavedListFragment.SavedFragmentListener,
         SettingsFragment.SettingsFragmentListener,
-        DatePickerFragment.DatePickerFragmentListener {
+        DatePickerFragment.DatePickerFragmentListener{
 
     private ArrayList<Article> articleList;
     private ArrayList<Article> savedArticles;
@@ -83,6 +84,18 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void requestDatePickerDialog(String ID) throws ParseException {
+        DatePickerFragment datePickerFragment;
+        if (ID == "from") {
+            datePickerFragment = new DatePickerFragment(ID, this.settings.getFrom());
+        } else {
+            datePickerFragment = new DatePickerFragment(ID, this.settings.getTo());
+        }
+
+        datePickerFragment.show(this.getSupportFragmentManager(),"datePicker");
+    }
+
+    @Override
     public void requestSettings() {
         this.replaceFragment(SettingsFragment.newInstance());
     }
@@ -102,19 +115,18 @@ public class MainActivity extends AppCompatActivity implements
         this.replaceFragment(SavedListFragment.newInstance());
     }
 
-
     @Override
     public ArrayList<Article> getSavedList() {
         return this.savedArticles;
     }
 
     @Override
-    public void requestFromChange(String from) {
-        this.getSettings().setFrom(from);
+    public void updateFrom(String from) {
+        this.settings.setFrom(from);
     }
 
     @Override
-    public void requestToChange(String to) {
-        this.getSettings().setTo(to);
+    public void updateTo(String to) {
+        this.settings.setTo(to);
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,13 +25,12 @@ import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
 public class SettingsFragment extends Fragment {
 
     private SettingsFragmentListener mListener;
-    private DialogFragment from_fragment;
-    private DialogFragment to_fragment;
 
     public interface SettingsFragmentListener {
         Settings getSettings();
         void updateSettings(Settings settings);
         void requestHome();
+        void requestDatePickerDialog(String ID) throws ParseException;
     }
 
     public static Fragment newInstance() {
@@ -73,16 +71,8 @@ public class SettingsFragment extends Fragment {
         final Settings settings = mListener.getSettings();
         final ViewHolder viewHolder = new ViewHolder(view);
 
-
-        try {
-            this.from_fragment = new DatePickerFragment("from", settings.getFrom());
-            this.to_fragment = new DatePickerFragment("to", settings.getTo());
-            viewHolder.from_date_choosen.setText(settings.getFrom());
-            viewHolder.to_date_choosen.setText(settings.getTo());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        viewHolder.from_date_choosen.setText(settings.getFrom());
+        viewHolder.to_date_choosen.setText(settings.getTo());
 
         ArrayAdapter<CharSequence> language_adapter = ArrayAdapter.createFromResource(container.getContext(),
                 R.array.language_array, android.R.layout.simple_spinner_item);
@@ -107,14 +97,22 @@ public class SettingsFragment extends Fragment {
         viewHolder.date_picker_from.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                from_fragment.show(getFragmentManager(),"DatePicker");
+                try {
+                    mListener.requestDatePickerDialog("from");
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         viewHolder.date_picker_to.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                from_fragment.show(getFragmentManager(),"DatePicker");
+                try {
+                    mListener.requestDatePickerDialog("to");
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -125,8 +123,8 @@ public class SettingsFragment extends Fragment {
                 String pageSize = viewHolder.pageSize_spinner.getSelectedItem().toString();
                 String sortBy = viewHolder.sortBy_spinner.getSelectedItem().toString();
 
-                String from = ((DatePickerFragment) from_fragment).getDate();
-                String to = ((DatePickerFragment) to_fragment).getDate();
+                String from = settings.getFrom();
+                String to = settings.getTo();
 
                 settings.setLanguage(language);
                 settings.setPageSize(pageSize);
