@@ -31,7 +31,7 @@ public class ArticleListFragment extends Fragment {
 
     public interface ArticleListFragmentListener {
         List<Article> getArticleList();
-        void requestComment();
+        void requestComment(Article article);
         void requestSaveArticle(Article article);
     }
 
@@ -165,7 +165,7 @@ public class ArticleListFragment extends Fragment {
             viewHolder.comment_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   mListener.requestComment();
+                    mListener.requestComment(article);
                 }
             });
 

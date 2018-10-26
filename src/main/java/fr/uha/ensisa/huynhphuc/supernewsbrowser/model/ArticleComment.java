@@ -1,11 +1,11 @@
 package fr.uha.ensisa.huynhphuc.supernewsbrowser.model;
 
-public class Comment {
+public class ArticleComment {
 
     private String comment;
     private Article article;
 
-    public Comment(Article article, String comment) {
+    public ArticleComment(Article article, String comment) {
         this.article = article;
         this.comment = comment;
     }
@@ -28,7 +28,7 @@ public class Comment {
 
     @Override
     public String toString() {
-        return "Comment{" +
+        return "ArticleComment{" +
                 "article=" + article +
                 ", comment='" + comment + '\'' +
                 '}';
