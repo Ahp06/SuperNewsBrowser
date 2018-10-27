@@ -32,10 +32,15 @@ public class SavedListFragment extends Fragment {
 
     public interface SavedFragmentListener {
         ArrayList<Article> getSavedList();
+
         boolean isCommented(Article article);
+
         boolean isSaved(Article article, int fragment);
+
         void addToDelete(Article article);
+
         void removeToDelete(Article article);
+
         void requestComment(Article article);
     }
 
@@ -56,7 +61,12 @@ public class SavedListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_article_list, container, false);
+        View view;
+        if (!mListener.getSavedList().isEmpty()) {
+            view = inflater.inflate(R.layout.fragment_article_list, container, false);
+        } else {
+            view = inflater.inflate(R.layout.fragment_empty_saved, container, false);
+        }
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -160,7 +170,7 @@ public class SavedListFragment extends Fragment {
             viewHolder.delete_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mListener.isSaved(article,MainActivity.SAVED_FRAGMENT)){
+                    if (mListener.isSaved(article, MainActivity.SAVED_FRAGMENT)) {
                         viewHolder.delete_button.setText(R.string.cancel_delete_text);
                         mListener.addToDelete(article);
                     } else {
@@ -174,7 +184,7 @@ public class SavedListFragment extends Fragment {
             viewHolder.comment_button_saved.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   mListener.requestComment(article);
+                    mListener.requestComment(article);
                 }
             });
 
