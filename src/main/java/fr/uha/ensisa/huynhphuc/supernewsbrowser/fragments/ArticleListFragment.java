@@ -35,11 +35,17 @@ public class ArticleListFragment extends Fragment {
 
     public interface ArticleListFragmentListener {
         List<Article> getArticleList();
+
         void requestComment(Article article);
+
         void requestSaveArticle(Article article);
+
         void requestCancelSave(Article article);
+
         boolean isSaved(Article article, int fragment);
+
         boolean isCommented(Article article);
+
         void requestWebsite(Article article);
     }
 
@@ -52,15 +58,15 @@ public class ArticleListFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_article_list, container, false);
+
+        View view;
+        if (!mListener.getArticleList().isEmpty()) {
+            view = inflater.inflate(R.layout.fragment_article_list, container, false);
+        } else {
+            view = inflater.inflate(R.layout.fragment_empty_list, container, false);
+        }
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -94,7 +100,7 @@ public class ArticleListFragment extends Fragment {
 
     private class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> {
 
-        public class ViewHolder extends RecyclerView.ViewHolder{
+        public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
             public final TextView contentView;
             public final ImageView imageView;
@@ -163,7 +169,7 @@ public class ArticleListFragment extends Fragment {
             viewHolder.save_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!mListener.isSaved(article,MainActivity.LIST_FRAGMENT)){
+                    if (!mListener.isSaved(article, MainActivity.LIST_FRAGMENT)) {
                         mListener.requestSaveArticle(article);
                         viewHolder.save_button.setText(R.string.saved_text);
                     } else {
@@ -187,7 +193,7 @@ public class ArticleListFragment extends Fragment {
                 }
             });
 
-            if (mListener.isSaved(article,MainActivity.LIST_FRAGMENT)) {
+            if (mListener.isSaved(article, MainActivity.LIST_FRAGMENT)) {
                 viewHolder.save_button.setText(R.string.saved_text);
             } else {
                 viewHolder.save_button.setText(R.string.save_text);

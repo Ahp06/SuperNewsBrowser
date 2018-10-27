@@ -125,6 +125,8 @@ public class HomeFragment extends Fragment {
         void setArticleList(ArrayList<Article> articles);
         void requestArticleList();
         void requestSavedList();
+        void requestHistory();
+        void addIntoHistory(String query);
     }
 
     public HomeFragment() {
@@ -144,8 +146,8 @@ public class HomeFragment extends Fragment {
         if (!this.query.getText().toString().equals("")) {
             String query = this.query.getText().toString();
             Log.d("query", "=" + query);
+            mListener.addIntoHistory(query);
             new ArticleHttpRequest().execute(mListener.getSettings().applySettings(query));
-
         } else {
             Toast.makeText(this.getContext(), R.string.empty_query, Toast.LENGTH_SHORT).show();
         }
@@ -201,6 +203,10 @@ public class HomeFragment extends Fragment {
 
         if (item.getItemId() == R.id.settings_item) {
             mListener.requestSettings();
+        }
+
+        if (item.getItemId() == R.id.history_item) {
+            mListener.requestHistory();
         }
 
 

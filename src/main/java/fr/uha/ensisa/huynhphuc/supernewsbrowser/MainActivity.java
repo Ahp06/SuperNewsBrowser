@@ -14,6 +14,7 @@ import java.util.List;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.ArticleListFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.CommentFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.DatePickerFragment;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.HistoryFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.HomeFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SavedListFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SettingsFragment;
@@ -27,12 +28,14 @@ public class MainActivity extends AppCompatActivity implements
         SavedListFragment.SavedFragmentListener,
         SettingsFragment.SettingsFragmentListener,
         DatePickerFragment.DatePickerFragmentListener,
-        CommentFragment.CommentFragmentListener {
+        CommentFragment.CommentFragmentListener,
+        HistoryFragment.HistoryFragmentListener {
 
     private ArrayList<Article> articleList;
     private ArrayList<Article> savedArticles;
     private ArrayList<Article> toDelete;
     private ArrayList<ArticleComment> comments;
+    private ArrayList<String> history;
     private Settings settings;
 
     public static final int COMMENT_FRAGMENT = 0;
@@ -48,7 +51,8 @@ public class MainActivity extends AppCompatActivity implements
         if (this.savedArticles == null) this.savedArticles = new ArrayList<Article>();
         if (this.comments == null) this.comments = new ArrayList<ArticleComment>();
         if (this.settings == null) this.settings = new Settings();
-        if(this.toDelete == null) this.toDelete = new ArrayList<Article>();
+        if (this.toDelete == null) this.toDelete = new ArrayList<Article>();
+        if (this.history == null) this.history = new ArrayList<String>();
 
         this.replaceFragment(HomeFragment.newInstance());
     }
@@ -97,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void requestCancelSave(Article article) {
-        this.savedArticles.remove(getIndex(article,savedArticles));
+        this.savedArticles.remove(getIndex(article, savedArticles));
     }
 
     @Override
@@ -159,6 +163,16 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void requestSavedList() {
         this.replaceFragment(SavedListFragment.newInstance());
+    }
+
+    @Override
+    public void requestHistory() {
+        this.replaceFragment(HistoryFragment.newInstance());
+    }
+
+    @Override
+    public void addIntoHistory(String query) {
+        this.history.add(query);
     }
 
     @Override
@@ -241,6 +255,16 @@ public class MainActivity extends AppCompatActivity implements
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         startActivity(i);
-        Toast.makeText(getApplicationContext(),R.string.loading_text,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), R.string.loading_text, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public ArrayList<String> getHistory() {
+        return this.history;
+    }
+
+    @Override
+    public void clearHistory() {
+        this.history.clear();
     }
 }
