@@ -1,10 +1,11 @@
 package fr.uha.ensisa.huynhphuc.supernewsbrowser;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-
-import org.w3c.dom.Comment;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static final int COMMENT_FRAGMENT = 0;
     public static final int SAVED_FRAGMENT = 1;
+    public static final int LIST_FRAGMENT = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +93,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void requestSaveArticle(Article article) {
         this.savedArticles.add(article);
+    }
+
+    @Override
+    public void requestCancelSave(Article article) {
+        this.savedArticles.remove(getIndex(article,savedArticles));
     }
 
     @Override
@@ -204,5 +211,36 @@ public class MainActivity extends AppCompatActivity implements
 
         //The article is in the saved list and isn't into toDelete list
         return fragment == MainActivity.SAVED_FRAGMENT ? (isSaved && !inToDeleteList) : isSaved;
+    }
+
+    @Override
+    public void addToDelete(Article article) {
+        this.toDelete.add(article);
+    }
+
+    @Override
+    public void removeToDelete(Article article) {
+        this.toDelete.remove(article);
+    }
+
+    @Override
+    public boolean isCommented(Article article) {
+        boolean isCommented = false;
+        for (ArticleComment comment : comments) {
+            if (compare(article, comment.getArticle())) {
+                isCommented = true;
+            }
+        }
+
+        return isCommented;
+    }
+
+    @Override
+    public void requestWebsite(Article article) {
+        String url = article.getUrl();
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
+        Toast.makeText(getApplicationContext(),R.string.loading_text,Toast.LENGTH_LONG).show();
     }
 }

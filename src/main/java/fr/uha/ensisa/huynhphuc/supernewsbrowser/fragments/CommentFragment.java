@@ -25,13 +25,9 @@ public class CommentFragment extends Fragment {
 
     public interface CommentFragmentListener {
         ArticleComment getCommentOf(Article article);
-
         void addComment(ArticleComment articleComment);
-
         boolean isSaved(Article article, int fragment);
-
         void requestSaveArticle(Article article);
-
         void deleteComment(ArticleComment comment);
     }
 
@@ -61,21 +57,17 @@ public class CommentFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Bundle args = getArguments();
-        if (args != null) {
-            this.article = args.getParcelable("article");
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_comment, container, false);
         final ViewHolder viewHolder = new ViewHolder(view);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            this.article = args.getParcelable("article");
+        }
 
         this.comment = mListener.getCommentOf(this.article);
         if (this.comment != null) {
@@ -111,6 +103,7 @@ public class CommentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mListener.deleteComment(comment);
+                getFragmentManager().popBackStack();
                 Toast.makeText(v.getContext(), R.string.delete_comment_text, Toast.LENGTH_SHORT).show();
             }
         });

@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.MainActivity;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.utils.ArticleImageDownload;
@@ -31,6 +32,11 @@ public class SavedListFragment extends Fragment {
 
     public interface SavedFragmentListener {
         ArrayList<Article> getSavedList();
+        boolean isCommented(Article article);
+        boolean isSaved(Article article, int fragment);
+        void addToDelete(Article article);
+        void removeToDelete(Article article);
+        void requestComment(Article article);
     }
 
 
@@ -112,9 +118,9 @@ public class SavedListFragment extends Fragment {
 
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+        public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
 
-            Article article = mListener.getSavedList().get(i);
+            final Article article = mListener.getSavedList().get(i);
 
             //Image downloading
             ArticleImageDownload downloader = new ArticleImageDownload(viewHolder.imageViewSaved);
@@ -150,6 +156,33 @@ public class SavedListFragment extends Fragment {
                             "<p> écrit le : " + dateFormatted + "</p>";
 
             viewHolder.contentViewSaved.setText(Html.fromHtml(content));
+
+            viewHolder.delete_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener.isSaved(article,MainActivity.SAVED_FRAGMENT)){
+                        viewHolder.delete_button.setText(R.string.cancel_delete_text);
+                        mListener.addToDelete(article);
+                    } else {
+                        viewHolder.delete_button.setText(R.string.delete_text);
+                        mListener.removeToDelete(article);
+                    }
+                    // Log.d("DataHolder","ToDelete = " + DataHolder.getToDelete());
+                }
+            });
+
+            viewHolder.comment_button_saved.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   mListener.requestComment(article);
+                }
+            });
+
+            if (mListener.isCommented(article)) {
+                viewHolder.comment_button_saved.setText(R.string.see_comment);
+            } else {
+                viewHolder.comment_button_saved.setText(R.string.comment_text);
+            }
 
         }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -21,9 +22,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.MainActivity;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.utils.ArticleImageDownload;
+
+import static android.widget.GridLayout.HORIZONTAL;
 
 public class ArticleListFragment extends Fragment {
 
@@ -33,6 +37,10 @@ public class ArticleListFragment extends Fragment {
         List<Article> getArticleList();
         void requestComment(Article article);
         void requestSaveArticle(Article article);
+        void requestCancelSave(Article article);
+        boolean isSaved(Article article, int fragment);
+        boolean isCommented(Article article);
+        void requestWebsite(Article article);
     }
 
     public ArticleListFragment() {
@@ -59,6 +67,8 @@ public class ArticleListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            DividerItemDecoration itemDecor = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+            recyclerView.addItemDecoration(itemDecor);
             recyclerView.setAdapter(new ArticleListAdapter());
         }
         return view;
@@ -84,7 +94,7 @@ public class ArticleListFragment extends Fragment {
 
     private class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> {
 
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class ViewHolder extends RecyclerView.ViewHolder{
             public final View mView;
             public final TextView contentView;
             public final ImageView imageView;
@@ -99,11 +109,6 @@ public class ArticleListFragment extends Fragment {
                 comment_button = (Button) view.findViewById(R.id.comment_button);
                 mView = view;
             }
-
-            @Override
-            public void onClick(View v) {
-                //GO to the website
-            }
         }
 
         public ArticleListAdapter() {
@@ -117,7 +122,7 @@ public class ArticleListFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+        public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
             final Article article = mListener.getArticleList().get(i);
 
             //Image downloading
@@ -158,7 +163,13 @@ public class ArticleListFragment extends Fragment {
             viewHolder.save_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.requestSaveArticle(article);
+                    if(!mListener.isSaved(article,MainActivity.LIST_FRAGMENT)){
+                        mListener.requestSaveArticle(article);
+                        viewHolder.save_button.setText(R.string.saved_text);
+                    } else {
+                        mListener.requestCancelSave(article);
+                        viewHolder.save_button.setText(R.string.save_text);
+                    }
                 }
             });
 
@@ -168,6 +179,25 @@ public class ArticleListFragment extends Fragment {
                     mListener.requestComment(article);
                 }
             });
+
+            viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.requestWebsite(article);
+                }
+            });
+
+            if (mListener.isSaved(article,MainActivity.LIST_FRAGMENT)) {
+                viewHolder.save_button.setText(R.string.saved_text);
+            } else {
+                viewHolder.save_button.setText(R.string.save_text);
+            }
+
+            if (mListener.isCommented(article)) {
+                viewHolder.comment_button.setText(R.string.see_comment);
+            } else {
+                viewHolder.comment_button.setText(R.string.comment_text);
+            }
 
         }
 
