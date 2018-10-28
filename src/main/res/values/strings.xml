@@ -148,6 +148,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="loading_text">Chargement...</string>
+    <string name="loading_text">Chargement de la page...</string>
+    <string name="exit_message">Voulez vous vraiment quitter l\'application ?</string>
+    <string name="exit_title_message">Quitter l\'application ?</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ public class HomeFragment extends Fragment {
     private View root;
     private EditText query;
     private HomeFragmentListener mListener;
+    private boolean backPressed = false;
 
     public class ArticleHttpRequest extends AsyncTask<String, Integer, String> {
 
@@ -121,11 +123,17 @@ public class HomeFragment extends Fragment {
 
     public interface HomeFragmentListener {
         Settings getSettings();
+
         void requestSettings();
+
         void setArticleList(ArrayList<Article> articles);
+
         void requestArticleList();
+
         void requestSavedList();
+
         void requestHistory();
+
         void addIntoHistory(String query);
     }
 
@@ -160,6 +168,27 @@ public class HomeFragment extends Fragment {
 
         this.root = inflater.inflate(R.layout.fragment_home, container, false);
         setHasOptionsMenu(true);
+
+        /*root.setFocusableInTouchMode(true);
+        root.requestFocus();
+        root.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    if (backPressed) {
+                        getFragmentManager().popBackStack();
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(v.getContext(), R.string.exit_application, Toast.LENGTH_SHORT).show();
+                        backPressed = true;
+                    }
+                }
+                return true;
+            }
+        });*/
 
         //execute the search if the user presses confirm with the keyboard
         this.query = root.findViewById(R.id.query);
@@ -229,5 +258,6 @@ public class HomeFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 
 }
