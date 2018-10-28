@@ -44,8 +44,6 @@ public class ArticleListFragment extends Fragment {
 
         boolean isSaved(Article article, int fragment);
 
-        boolean isCommented(Article article);
-
         void requestWebsite(Article article);
     }
 
@@ -182,6 +180,9 @@ public class ArticleListFragment extends Fragment {
             viewHolder.comment_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (!mListener.isSaved(article, MainActivity.LIST_FRAGMENT)) {
+                        mListener.requestSaveArticle(article);
+                    }
                     mListener.requestComment(article);
                 }
             });
@@ -199,7 +200,7 @@ public class ArticleListFragment extends Fragment {
                 viewHolder.save_button.setText(R.string.save_text);
             }
 
-            if (mListener.isCommented(article)) {
+            if (article.getComment() != null && article.getComment() != "") {
                 viewHolder.comment_button.setText(R.string.see_comment);
             } else {
                 viewHolder.comment_button.setText(R.string.comment_text);

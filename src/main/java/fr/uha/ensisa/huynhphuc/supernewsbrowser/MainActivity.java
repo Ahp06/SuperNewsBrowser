@@ -23,8 +23,6 @@ import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.HomeFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SavedListFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SettingsFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
-import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.ArticleComment;
-import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.ArticleCommentDao;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.ArticleDao;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.DaoSession;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
@@ -41,12 +39,10 @@ public class MainActivity extends AppCompatActivity implements
 
     private ArrayList<Article> articleList;
     private ArrayList<Article> toDelete;
-    private ArrayList<ArticleComment> comments;
     private ArrayList<String> history;
     private Settings settings;
 
     private ArticleDao savedArticleDao;
-    private ArticleCommentDao commentDAO;
     private SettingsDao settingsDAO;
 
     public static final int COMMENT_FRAGMENT = 0;
@@ -62,12 +58,13 @@ public class MainActivity extends AppCompatActivity implements
         // get all DAOs 
         DaoSession daoSession = ((App) getApplication()).getDaoSession();
         savedArticleDao = daoSession.getArticleDao();
-        commentDAO = daoSession.getArticleCommentDao();
         settingsDAO = daoSession.getSettingsDao();
 
+        savedArticleDao.deleteAll();
+        settingsDAO.deleteAll();
+
+
         if (this.articleList == null) this.articleList = new ArrayList<Article>();
-        //if (this.savedArticles == null) this.savedArticles = new ArrayList<Article>();
-        if (this.comments == null) this.comments = new ArrayList<ArticleComment>();
         if (this.settings == null) this.settings = new Settings();
         if (this.toDelete == null) this.toDelete = new ArrayList<Article>();
         if (this.history == null) this.history = new ArrayList<String>();
@@ -94,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements
         return condition;
     }
 
-    public Long getIDOf(Article article) {
+    public Article getArticleSaved(Article article) {
         Article savedArticle = savedArticleDao
                 .queryBuilder()
                 .where(ArticleDao.Properties.Title.eq(article.getTitle()),
@@ -104,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements
                         ArticleDao.Properties.Id.eq(article.getId()))
                 .list().get(0);
 
-        return savedArticle.getId();
+        return savedArticle;
     }
 
     @Override
@@ -120,7 +117,6 @@ public class MainActivity extends AppCompatActivity implements
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface arg0, int arg1) {
-                            // MainActivity.super.onBackPressed();
                             finish();
                             moveTaskToBack(true);
                         }
@@ -137,35 +133,29 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void requestSaveArticle(Article article) {
-        //this.savedArticles.add(article);
         this.savedArticleDao.insert(article);
         Log.d("DaoExample", "Inserted new article, ID: " + article.getId());
     }
 
     @Override
     public void requestCancelSave(Article article) {
-        Long ID = this.getIDOf(article);
+        Long ID = this.getArticleSaved(article).getId();
         this.savedArticleDao.deleteByKey(ID);
         Log.d("DaoExample", "Deleted an article, ID: " + article.getId());
-    }
-
-    @Override
-    public void deleteComment(ArticleComment comment) {
-        this.comments.remove(comment);
     }
 
     @Override
     public void requestComment(Article article) {
         CommentFragment commentFragment = CommentFragment.newInstance();
         Bundle args = new Bundle();
-        args.putParcelable("article", article);
+
+        args.putParcelable("article", getArticleSaved(article));
         commentFragment.setArguments(args);
         this.replaceFragment(commentFragment);
     }
 
     @Override
     public void deleteArticlesToDelete() {
-        //this.savedArticles.removeAll(this.toDelete);
         for(Article article : toDelete){
             this.savedArticleDao
                     .queryBuilder()
@@ -235,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public List<Article> getSavedList() {
-        return this.savedArticleDao.loadAll();
+        return this.savedArticleDao.count() == 0 ? new ArrayList<Article>() : this.savedArticleDao.loadAll();
     }
 
     @Override
@@ -249,24 +239,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public ArticleComment getCommentOf(Article article) {
-        for (ArticleComment comment : comments) {
-            if (compareArticles(article, comment.getArticle())) {
-                return comment;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void addComment(ArticleComment articleComment) {
-        this.comments.add(articleComment);
-    }
-
-    @Override
     public boolean isSaved(Article article, int fragment) {
         boolean isSaved = false;
-        List<Article> articles = this.savedArticleDao.loadAll();
+        List<Article> articles = this.getSavedList();
 
         for (int i = 0 ; i < articles.size() ; i ++) {
             if (compareArticles(article, articles.get(i))) {
@@ -275,14 +250,14 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         boolean inToDeleteList = false;
-        if (fragment == MainActivity.COMMENT_FRAGMENT) {
+        if (fragment == MainActivity.SAVED_FRAGMENT) {
             for (Article a : toDelete) {
                 if (compareArticles(article, a)) {
                     inToDeleteList = true;
                 }
             }
         }
-        Log.d("isSaved", "IsSaved = " + isSaved + ", inToDelete = " + inToDeleteList);
+
         //The article is in the saved list and isn't into toDelete list
         return fragment == MainActivity.SAVED_FRAGMENT ? (isSaved && !inToDeleteList) : isSaved;
     }
@@ -295,18 +270,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void removeToDelete(Article article) {
         this.toDelete.remove(article);
-    }
-
-    @Override
-    public boolean isCommented(Article article) {
-        boolean isCommented = false;
-        for (ArticleComment comment : comments) {
-            if (compareArticles(article, comment.getArticle())) {
-                isCommented = true;
-            }
-        }
-
-        return isCommented;
     }
 
     @Override

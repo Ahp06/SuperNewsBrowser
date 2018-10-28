@@ -15,20 +15,16 @@ import android.widget.Toast;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.MainActivity;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
-import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.ArticleComment;
 
 public class CommentFragment extends Fragment {
 
     private Article article;
-    private ArticleComment comment;
     private CommentFragmentListener mListener;
 
     public interface CommentFragmentListener {
-        ArticleComment getCommentOf(Article article);
-        void addComment(ArticleComment articleComment);
         boolean isSaved(Article article, int fragment);
         void requestSaveArticle(Article article);
-        void deleteComment(ArticleComment comment);
+        void requestCancelSave(Article article);
     }
 
     public CommentFragment() {
@@ -69,12 +65,11 @@ public class CommentFragment extends Fragment {
             this.article = args.getParcelable("article");
         }
 
-        this.comment = mListener.getCommentOf(this.article);
-        if (this.comment != null) {
-            viewHolder.comment_text.setText(comment.getComment());
+        String comment = article.getComment();
+        if (comment != null) {
+            viewHolder.comment_text.setText(comment);
         } else {
             viewHolder.comment_text.setText("");
-            this.comment = new ArticleComment(article, "");
         }
 
         viewHolder.valid_button.setOnClickListener(new View.OnClickListener() {
@@ -82,11 +77,12 @@ public class CommentFragment extends Fragment {
             public void onClick(View v) {
                 if (!viewHolder.comment_text.getText().equals("")) {
                     String content = viewHolder.comment_text.getText().toString();
-                    comment.setComment(content);
-                    mListener.addComment(comment);
+                    article.setComment(content);
                     if (!mListener.isSaved(article, MainActivity.COMMENT_FRAGMENT)) {
                         mListener.requestSaveArticle(article);
                     }
+                } else {
+                    mListener.requestCancelSave(article);
                 }
                 getFragmentManager().popBackStack();
             }
@@ -102,7 +98,7 @@ public class CommentFragment extends Fragment {
         viewHolder.delete_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.deleteComment(comment);
+                article.setComment(""); // OU null ?
                 getFragmentManager().popBackStack();
                 Toast.makeText(v.getContext(), R.string.delete_comment_text, Toast.LENGTH_SHORT).show();
             }

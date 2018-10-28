@@ -33,8 +33,6 @@ public class SavedListFragment extends Fragment {
     public interface SavedFragmentListener {
         List<Article> getSavedList();
 
-        boolean isCommented(Article article);
-
         boolean isSaved(Article article, int fragment);
 
         void addToDelete(Article article);
@@ -191,7 +189,7 @@ public class SavedListFragment extends Fragment {
                 }
             });
 
-            if (mListener.isCommented(article)) {
+            if (article.getComment() != "") {
                 viewHolder.comment_button_saved.setText(R.string.see_comment);
             } else {
                 viewHolder.comment_button_saved.setText(R.string.comment_text);

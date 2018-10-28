@@ -34,13 +34,17 @@ public class Article implements Parcelable {
     @Property(nameInDb = "URL")
     private String url;
 
-    public Article(String title, String author, String urlToImage, String description, String publishedAt, String url) {
+    @Property(nameInDb = "COMMENT")
+    private String comment;
+
+    public Article(String title, String author, String urlToImage, String description, String publishedAt, String url,String comment) {
         this.title = title;
         this.author = author;
         this.urlToImage = urlToImage;
         this.description = description;
         this.publishedAt = publishedAt;
         this.url = url;
+        this.comment = comment;
     }
 
     /***
@@ -54,6 +58,7 @@ public class Article implements Parcelable {
         this.description = articleJSON.optString("description");
         this.publishedAt = articleJSON.optString("publishedAt");
         this.url = articleJSON.optString("url");
+        this.comment = "";
     }
 
     protected Article(Parcel in) {
@@ -63,27 +68,16 @@ public class Article implements Parcelable {
         description = in.readString();
         publishedAt = in.readString();
         url = in.readString();
-    }
-
-    @Keep
-    public Article(Long id, String title, String author, String urlToImage, String description, String publishedAt,
-            String url, boolean isSaved) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.urlToImage = urlToImage;
-        this.description = description;
-        this.publishedAt = publishedAt;
-        this.url = url;
+        comment = "";
     }
 
     @Keep
     public Article() {
     }
 
-    @Generated(hash = 1496608951)
-    public Article(Long id, String title, String author, String urlToImage, String description, String publishedAt,
-            String url) {
+    @Generated(hash = 1001516024)
+    public Article(Long id, String title, String author, String urlToImage, String description, String publishedAt, String url,
+            String comment) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -91,6 +85,7 @@ public class Article implements Parcelable {
         this.description = description;
         this.publishedAt = publishedAt;
         this.url = url;
+        this.comment = comment;
     }
 
     public static final Creator<Article> CREATOR = new Creator<Article>() {
@@ -187,6 +182,14 @@ public class Article implements Parcelable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
 }
