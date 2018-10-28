@@ -3,20 +3,40 @@ package fr.uha.ensisa.huynhphuc.supernewsbrowser.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.greenrobot.greendao.annotation.Entity;
+
 import java.util.Calendar;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.BuildConfig;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Property;
+import org.greenrobot.greendao.annotation.Unique;
 
+@Entity
 public class Settings implements Parcelable {
 
     private final static String BASE_URL = "https://newsapi.org/v2/everything?";
     private final static String API_KEY = BuildConfig.ApiKey;
     private String queryWithSettings;
 
+    @Unique
+    @Property(nameInDb = "LANGUAGE")
     private String language;
+
+    @Unique
+    @Property(nameInDb = "PAGESIZE")
     private String pageSize;
+
+    @Unique
+    @Property(nameInDb = "SORTBY")
     private String sortBy;
+
+    @Unique
+    @Property(nameInDb = "FROM")
     private String from;
+
+    @Unique
+    @Property(nameInDb = "TO")
     private String to;
 
 
@@ -60,6 +80,17 @@ public class Settings implements Parcelable {
         sortBy = in.readString();
         from = in.readString();
         to = in.readString();
+    }
+
+    @Generated(hash = 1602290261)
+    public Settings(String queryWithSettings, String language, String pageSize, String sortBy,
+            String from, String to) {
+        this.queryWithSettings = queryWithSettings;
+        this.language = language;
+        this.pageSize = pageSize;
+        this.sortBy = sortBy;
+        this.from = from;
+        this.to = to;
     }
 
     public static final Creator<Settings> CREATOR = new Creator<Settings>() {
@@ -175,5 +206,13 @@ public class Settings implements Parcelable {
         dest.writeString(sortBy);
         dest.writeString(from);
         dest.writeString(to);
+    }
+
+    public String getQueryWithSettings() {
+        return this.queryWithSettings;
+    }
+
+    public void setQueryWithSettings(String queryWithSettings) {
+        this.queryWithSettings = queryWithSettings;
     }
 }

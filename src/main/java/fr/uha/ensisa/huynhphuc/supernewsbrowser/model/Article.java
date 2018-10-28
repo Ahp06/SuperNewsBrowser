@@ -3,15 +3,35 @@ package fr.uha.ensisa.huynhphuc.supernewsbrowser.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.Property;
 import org.json.JSONObject;
+import org.greenrobot.greendao.annotation.Generated;
 
+@Entity
 public class Article implements Parcelable {
 
+    @Id
+    private Long id;
+
+    @Property(nameInDb = "TITLE")
     private String title;
+
+    @Property(nameInDb = "AUTHOR")
     private String author;
+
+    @Property(nameInDb = "URLTOIMAGE")
     private String urlToImage;
+
+    @Property(nameInDb = "DESCRIPTION")
     private String description;
+
+    @Property(nameInDb = "PUBLISHEDAT")
     private String publishedAt;
+
+    @Property(nameInDb = "URL")
     private String url;
 
     public Article(String title, String author, String urlToImage, String description, String publishedAt, String url) {
@@ -43,6 +63,34 @@ public class Article implements Parcelable {
         description = in.readString();
         publishedAt = in.readString();
         url = in.readString();
+    }
+
+    @Keep
+    public Article(Long id, String title, String author, String urlToImage, String description, String publishedAt,
+            String url, boolean isSaved) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.urlToImage = urlToImage;
+        this.description = description;
+        this.publishedAt = publishedAt;
+        this.url = url;
+    }
+
+    @Keep
+    public Article() {
+    }
+
+    @Generated(hash = 1496608951)
+    public Article(Long id, String title, String author, String urlToImage, String description, String publishedAt,
+            String url) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.urlToImage = urlToImage;
+        this.description = description;
+        this.publishedAt = publishedAt;
+        this.url = url;
     }
 
     public static final Creator<Article> CREATOR = new Creator<Article>() {
@@ -108,4 +156,37 @@ public class Article implements Parcelable {
         dest.writeString(publishedAt);
         dest.writeString(url);
     }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setUrlToImage(String urlToImage) {
+        this.urlToImage = urlToImage;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPublishedAt(String publishedAt) {
+        this.publishedAt = publishedAt;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
 }

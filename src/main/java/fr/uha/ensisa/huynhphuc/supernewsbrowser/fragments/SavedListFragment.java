@@ -17,8 +17,8 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.MainActivity;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
@@ -31,7 +31,7 @@ public class SavedListFragment extends Fragment {
     private SavedFragmentListener mListener;
 
     public interface SavedFragmentListener {
-        ArrayList<Article> getSavedList();
+        List<Article> getSavedList();
 
         boolean isCommented(Article article);
 

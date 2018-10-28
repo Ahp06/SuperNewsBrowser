@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.text.ParseException;
@@ -23,7 +24,11 @@ import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SavedListFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SettingsFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.ArticleComment;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.ArticleCommentDao;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.ArticleDao;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.DaoSession;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.SettingsDao;
 
 public class MainActivity extends AppCompatActivity implements
         HomeFragment.HomeFragmentListener,
@@ -35,23 +40,33 @@ public class MainActivity extends AppCompatActivity implements
         HistoryFragment.HistoryFragmentListener {
 
     private ArrayList<Article> articleList;
-    private ArrayList<Article> savedArticles;
     private ArrayList<Article> toDelete;
     private ArrayList<ArticleComment> comments;
     private ArrayList<String> history;
     private Settings settings;
 
+    private ArticleDao savedArticleDao;
+    private ArticleCommentDao commentDAO;
+    private SettingsDao settingsDAO;
+
     public static final int COMMENT_FRAGMENT = 0;
     public static final int SAVED_FRAGMENT = 1;
     public static final int LIST_FRAGMENT = 2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // get all DAOs 
+        DaoSession daoSession = ((App) getApplication()).getDaoSession();
+        savedArticleDao = daoSession.getArticleDao();
+        commentDAO = daoSession.getArticleCommentDao();
+        settingsDAO = daoSession.getSettingsDao();
+
         if (this.articleList == null) this.articleList = new ArrayList<Article>();
-        if (this.savedArticles == null) this.savedArticles = new ArrayList<Article>();
+        //if (this.savedArticles == null) this.savedArticles = new ArrayList<Article>();
         if (this.comments == null) this.comments = new ArrayList<ArticleComment>();
         if (this.settings == null) this.settings = new Settings();
         if (this.toDelete == null) this.toDelete = new ArrayList<Article>();
@@ -68,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements
         fragmentTransaction.commit();
     }
 
-    public static boolean compare(Article a1, Article a2) {
+    public boolean compareArticles(Article a1, Article a2) {
         boolean condition =
                 a1.getTitle().equals(a2.getTitle())
                         && a1.getAuthor().equals(a2.getAuthor())
@@ -79,15 +94,17 @@ public class MainActivity extends AppCompatActivity implements
         return condition;
     }
 
-    public static int getIndex(Article article, ArrayList<Article> list) {
-        int index = 0;
-        for (Article art : list) {
-            if (compare(art, article)) {
-                return index;
-            }
-            index++;
-        }
-        return -1;
+    public Long getIDOf(Article article) {
+        Article savedArticle = savedArticleDao
+                .queryBuilder()
+                .where(ArticleDao.Properties.Title.eq(article.getTitle()),
+                        ArticleDao.Properties.Id.eq(article.getId()),
+                        ArticleDao.Properties.Id.eq(article.getId()),
+                        ArticleDao.Properties.Id.eq(article.getId()),
+                        ArticleDao.Properties.Id.eq(article.getId()))
+                .list().get(0);
+
+        return savedArticle.getId();
     }
 
     @Override
@@ -120,12 +137,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void requestSaveArticle(Article article) {
-        this.savedArticles.add(article);
+        //this.savedArticles.add(article);
+        this.savedArticleDao.insert(article);
+        Log.d("DaoExample", "Inserted new article, ID: " + article.getId());
     }
 
     @Override
     public void requestCancelSave(Article article) {
-        this.savedArticles.remove(getIndex(article, savedArticles));
+        Long ID = this.getIDOf(article);
+        this.savedArticleDao.deleteByKey(ID);
+        Log.d("DaoExample", "Deleted an article, ID: " + article.getId());
     }
 
     @Override
@@ -144,7 +165,14 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void deleteArticlesToDelete() {
-        this.savedArticles.removeAll(this.toDelete);
+        //this.savedArticles.removeAll(this.toDelete);
+        for(Article article : toDelete){
+            this.savedArticleDao
+                    .queryBuilder()
+                    .where(ArticleDao.Properties.Id.eq(article.getId()))
+                    .buildDelete().executeDeleteWithoutDetachingEntities();
+            Log.d("DaoExample", "Deleted an article, ID: " + article.getId());
+        }
         this.toDelete.clear();
     }
 
@@ -206,8 +234,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public ArrayList<Article> getSavedList() {
-        return this.savedArticles;
+    public List<Article> getSavedList() {
+        return this.savedArticleDao.loadAll();
     }
 
     @Override
@@ -223,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public ArticleComment getCommentOf(Article article) {
         for (ArticleComment comment : comments) {
-            if (compare(article, comment.getArticle())) {
+            if (compareArticles(article, comment.getArticle())) {
                 return comment;
             }
         }
@@ -238,8 +266,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean isSaved(Article article, int fragment) {
         boolean isSaved = false;
-        for (Article a : savedArticles) {
-            if (compare(article, a)) {
+        List<Article> articles = this.savedArticleDao.loadAll();
+
+        for (int i = 0 ; i < articles.size() ; i ++) {
+            if (compareArticles(article, articles.get(i))) {
                 isSaved = true;
             }
         }
@@ -247,12 +277,12 @@ public class MainActivity extends AppCompatActivity implements
         boolean inToDeleteList = false;
         if (fragment == MainActivity.COMMENT_FRAGMENT) {
             for (Article a : toDelete) {
-                if (compare(article, a)) {
+                if (compareArticles(article, a)) {
                     inToDeleteList = true;
                 }
             }
         }
-
+        Log.d("isSaved", "IsSaved = " + isSaved + ", inToDelete = " + inToDeleteList);
         //The article is in the saved list and isn't into toDelete list
         return fragment == MainActivity.SAVED_FRAGMENT ? (isSaved && !inToDeleteList) : isSaved;
     }
@@ -271,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean isCommented(Article article) {
         boolean isCommented = false;
         for (ArticleComment comment : comments) {
-            if (compare(article, comment.getArticle())) {
+            if (compareArticles(article, comment.getArticle())) {
                 isCommented = true;
             }
         }
