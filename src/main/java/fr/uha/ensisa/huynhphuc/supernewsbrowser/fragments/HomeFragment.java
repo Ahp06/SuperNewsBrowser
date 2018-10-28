@@ -169,27 +169,6 @@ public class HomeFragment extends Fragment {
         this.root = inflater.inflate(R.layout.fragment_home, container, false);
         setHasOptionsMenu(true);
 
-        /*root.setFocusableInTouchMode(true);
-        root.requestFocus();
-        root.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    if (backPressed) {
-                        getFragmentManager().popBackStack();
-                        Intent intent = new Intent(Intent.ACTION_MAIN);
-                        intent.addCategory(Intent.CATEGORY_HOME);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(v.getContext(), R.string.exit_application, Toast.LENGTH_SHORT).show();
-                        backPressed = true;
-                    }
-                }
-                return true;
-            }
-        });*/
-
         //execute the search if the user presses confirm with the keyboard
         this.query = root.findViewById(R.id.query);
         query.setOnEditorActionListener(new TextView.OnEditorActionListener() {

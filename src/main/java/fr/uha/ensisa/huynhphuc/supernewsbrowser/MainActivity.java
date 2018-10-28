@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.text.ParseException;
@@ -97,8 +96,18 @@ public class MainActivity extends AppCompatActivity implements
         if (manager.getBackStackEntryCount() > 1 ) {
             manager.popBackStack();
         } else {
-            // if there is only one entry in the backstack, show the home screen
-            moveTaskToBack(true);
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.exit_title_message)
+                    .setMessage(R.string.exit_message)
+                    .setNegativeButton(android.R.string.no, null)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            // MainActivity.super.onBackPressed();
+                            finish();
+                            moveTaskToBack(true);
+                        }
+                    }).create().show();
         }
     }
 
@@ -131,6 +140,12 @@ public class MainActivity extends AppCompatActivity implements
         args.putParcelable("article", article);
         commentFragment.setArguments(args);
         this.replaceFragment(commentFragment);
+    }
+
+    @Override
+    public void deleteArticlesToDelete() {
+        this.savedArticles.removeAll(this.toDelete);
+        this.toDelete.clear();
     }
 
     @Override

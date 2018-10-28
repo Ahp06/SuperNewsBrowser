@@ -42,6 +42,8 @@ public class SavedListFragment extends Fragment {
         void removeToDelete(Article article);
 
         void requestComment(Article article);
+
+        void deleteArticlesToDelete();
     }
 
 
@@ -93,6 +95,7 @@ public class SavedListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener.deleteArticlesToDelete();
         mListener = null;
     }
 
