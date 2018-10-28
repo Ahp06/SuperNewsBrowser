@@ -19,6 +19,10 @@ public class App extends Application {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "articles-db");
         Database db = helper.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
+
+        //DaoMaster.dropAllTables(getDaoSession().getDatabase(), true);
+        //DaoMaster.createAllTables(getDaoSession().getDatabase(), true);
+
     }
 
     public DaoSession getDaoSession() {

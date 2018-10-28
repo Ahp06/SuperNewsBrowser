@@ -25,6 +25,8 @@ import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SettingsFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.ArticleDao;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.DaoSession;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.History;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.HistoryDao;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.SettingsDao;
 
@@ -39,11 +41,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private ArrayList<Article> articleList;
     private ArrayList<Article> toDelete;
-    private ArrayList<String> history;
     private Settings settings;
 
     private ArticleDao savedArticleDao;
-    private SettingsDao settingsDAO;
+    private HistoryDao historyDao;
+    private SettingsDao settingsDao;
 
     public static final int COMMENT_FRAGMENT = 0;
     public static final int SAVED_FRAGMENT = 1;
@@ -58,16 +60,12 @@ public class MainActivity extends AppCompatActivity implements
         // get all DAOs 
         DaoSession daoSession = ((App) getApplication()).getDaoSession();
         savedArticleDao = daoSession.getArticleDao();
-        settingsDAO = daoSession.getSettingsDao();
-
-        savedArticleDao.deleteAll();
-        settingsDAO.deleteAll();
-
+        settingsDao = daoSession.getSettingsDao();
+        historyDao = daoSession.getHistoryDao();
 
         if (this.articleList == null) this.articleList = new ArrayList<Article>();
         if (this.settings == null) this.settings = new Settings();
         if (this.toDelete == null) this.toDelete = new ArrayList<Article>();
-        if (this.history == null) this.history = new ArrayList<String>();
 
         this.replaceFragment(HomeFragment.newInstance());
     }
@@ -107,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         FragmentManager manager = getSupportFragmentManager();
-        if (manager.getBackStackEntryCount() > 1 ) {
+        if (manager.getBackStackEntryCount() > 1) {
             manager.popBackStack();
         } else {
             new AlertDialog.Builder(this)
@@ -156,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void deleteArticlesToDelete() {
-        for(Article article : toDelete){
+        for (Article article : toDelete) {
             this.savedArticleDao
                     .queryBuilder()
                     .where(ArticleDao.Properties.Id.eq(article.getId()))
@@ -220,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void addIntoHistory(String query) {
-        this.history.add(query);
+        this.historyDao.insert(new History(query));
     }
 
     @Override
@@ -243,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements
         boolean isSaved = false;
         List<Article> articles = this.getSavedList();
 
-        for (int i = 0 ; i < articles.size() ; i ++) {
+        for (int i = 0; i < articles.size(); i++) {
             if (compareArticles(article, articles.get(i))) {
                 isSaved = true;
             }
@@ -282,12 +280,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public ArrayList<String> getHistory() {
-        return this.history;
+    public List<History> getHistory() {
+        return historyDao.count() == 0 ? new ArrayList<History>() : historyDao.loadAll();
     }
 
     @Override
     public void clearHistory() {
-        this.history.clear();
+        this.historyDao.deleteAll();
     }
 }

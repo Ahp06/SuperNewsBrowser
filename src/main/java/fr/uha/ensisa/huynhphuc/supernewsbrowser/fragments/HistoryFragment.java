@@ -14,8 +14,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.History;
 
 public class HistoryFragment extends Fragment {
 
@@ -25,7 +27,7 @@ public class HistoryFragment extends Fragment {
     private View view;
 
     public interface HistoryFragmentListener {
-        ArrayList<String> getHistory();
+        List<History> getHistory();
         void clearHistory();
     }
 
@@ -43,12 +45,16 @@ public class HistoryFragment extends Fragment {
         this.view = inflater.inflate(R.layout.fragment_history, container, false);
         setHasOptionsMenu(true);
 
-        ArrayList<String> history = mListener.getHistory();
+        List<History> history = mListener.getHistory();
+        List<String> queries = new ArrayList<String>();
+        for(int i = 0; i < history.size() ; i ++){
+            queries.add(history.get(i).getQuery());
+        }
 
         this.lv_history = (ListView) view.findViewById(R.id.history);
 
-        if (!history.isEmpty()) {
-            this.adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, history);
+        if (!queries.isEmpty()) {
+            this.adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, queries);
             lv_history.setAdapter(adapter);
         } else {
             TextView emptyText = (TextView) view.findViewById(R.id.empty_history);
