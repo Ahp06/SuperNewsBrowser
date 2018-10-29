@@ -45,6 +45,8 @@ public class ArticleListFragment extends Fragment {
         boolean isSaved(Article article, int fragment);
 
         void requestWebsite(Article article);
+
+        Article getCopyInSaved(Article article);
     }
 
     public ArticleListFragment() {
@@ -200,7 +202,8 @@ public class ArticleListFragment extends Fragment {
                 viewHolder.save_button.setText(R.string.save_text);
             }
 
-            if (article.getComment() != null && article.getComment() != "") {
+            Article copySaved = mListener.getCopyInSaved(article);
+            if (copySaved != null && copySaved.getComment() != null && copySaved.getComment() != "") {
                 viewHolder.comment_button.setText(R.string.see_comment);
             } else {
                 viewHolder.comment_button.setText(R.string.comment_text);

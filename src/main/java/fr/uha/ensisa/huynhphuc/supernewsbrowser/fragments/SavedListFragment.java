@@ -178,7 +178,6 @@ public class SavedListFragment extends Fragment {
                         viewHolder.delete_button.setText(R.string.delete_text);
                         mListener.removeToDelete(article);
                     }
-                    // Log.d("DataHolder","ToDelete = " + DataHolder.getToDelete());
                 }
             });
 
@@ -189,7 +188,7 @@ public class SavedListFragment extends Fragment {
                 }
             });
 
-            if (article.getComment() != "") {
+            if (article.getComment() != "" && article.getComment() != null) {
                 viewHolder.comment_button_saved.setText(R.string.see_comment);
             } else {
                 viewHolder.comment_button_saved.setText(R.string.comment_text);

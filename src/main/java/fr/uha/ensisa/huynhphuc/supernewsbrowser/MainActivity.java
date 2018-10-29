@@ -70,6 +70,10 @@ public class MainActivity extends AppCompatActivity implements
         this.replaceFragment(HomeFragment.newInstance());
     }
 
+    /**
+     * Replace the fragment in the fragment container of the MainActivity
+     * @param someFragment
+     */
     public void replaceFragment(Fragment someFragment) {
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -78,6 +82,12 @@ public class MainActivity extends AppCompatActivity implements
         fragmentTransaction.commit();
     }
 
+    /**
+     * Return true if all fields of the two articles are the same
+     * @param a1
+     * @param a2
+     * @return
+     */
     public boolean compareArticles(Article a1, Article a2) {
         boolean condition =
                 a1.getTitle().equals(a2.getTitle())
@@ -89,17 +99,24 @@ public class MainActivity extends AppCompatActivity implements
         return condition;
     }
 
-    public Article getArticleSaved(Article article) {
-        Article savedArticle = savedArticleDao
+    /**
+     * Return the copy of the article saved in the saved list
+     * @param article
+     * @return
+     */
+    public Article getCopySavedOf(Article article) {
+        List<Article> queryCopy = savedArticleDao
                 .queryBuilder()
                 .where(ArticleDao.Properties.Title.eq(article.getTitle()),
-                        ArticleDao.Properties.Id.eq(article.getId()),
-                        ArticleDao.Properties.Id.eq(article.getId()),
-                        ArticleDao.Properties.Id.eq(article.getId()),
-                        ArticleDao.Properties.Id.eq(article.getId()))
-                .list().get(0);
+                        ArticleDao.Properties.UrlToImage.eq(article.getUrlToImage()),
+                        ArticleDao.Properties.PublishedAt.eq(article.getPublishedAt()),
+                        ArticleDao.Properties.Url.eq(article.getUrl()),
+                        ArticleDao.Properties.Author.eq(article.getAuthor()))
+                .list();
 
-        return savedArticle;
+        if (queryCopy.size() == 1) return queryCopy.get(0);
+
+        return null;
     }
 
     @Override
@@ -124,34 +141,52 @@ public class MainActivity extends AppCompatActivity implements
 
     //Implementation of all fragment listener interfaces
 
+    /**
+     * Return the article list resulting of the user query
+     * @return
+     */
     @Override
     public List<Article> getArticleList() {
         return articleList;
     }
 
+    /**
+     * Save an article in the DB
+     * @param article
+     */
     @Override
     public void requestSaveArticle(Article article) {
         this.savedArticleDao.insert(article);
-        Log.d("DaoExample", "Inserted new article, ID: " + article.getId());
     }
 
+    /**
+     * Cancel the save of an article in the fragment article list,
+     * delete the saved article in the DB
+     * @param article
+     */
     @Override
     public void requestCancelSave(Article article) {
-        Long ID = this.getArticleSaved(article).getId();
+        Long ID = this.getCopySavedOf(article).getId();
         this.savedArticleDao.deleteByKey(ID);
-        Log.d("DaoExample", "Deleted an article, ID: " + article.getId());
     }
 
+    /**
+     * Switch to CommentFragment
+     * @param article
+     */
     @Override
     public void requestComment(Article article) {
         CommentFragment commentFragment = CommentFragment.newInstance();
         Bundle args = new Bundle();
 
-        args.putParcelable("article", getArticleSaved(article));
+        args.putParcelable("article", getCopySavedOf(article));
         commentFragment.setArguments(args);
         this.replaceFragment(commentFragment);
     }
 
+    /**
+     * Delete all articles saved in DB who are in the " To Delete " list
+     */
     @Override
     public void deleteArticlesToDelete() {
         for (Article article : toDelete) {
@@ -164,21 +199,37 @@ public class MainActivity extends AppCompatActivity implements
         this.toDelete.clear();
     }
 
+    /**
+     * Return the settings of the application
+     * @return
+     */
     @Override
     public Settings getSettings() {
         return this.settings;
     }
 
+    /**
+     * Update settings of the application
+     * @param settings
+     */
     @Override
     public void updateSettings(Settings settings) {
         this.settings = settings;
     }
 
+    /**
+     * Switch to HomeFragment
+     */
     @Override
     public void requestHome() {
         this.replaceFragment(HomeFragment.newInstance());
     }
 
+    /**
+     * Open the Date picker dialog corresponding to the ID in parameter
+     * @param ID
+     * @throws ParseException
+     */
     @Override
     public void requestDatePickerDialog(String ID) throws ParseException {
         DatePickerFragment datePickerFragment;
@@ -191,51 +242,91 @@ public class MainActivity extends AppCompatActivity implements
         datePickerFragment.show(this.getSupportFragmentManager(), "datePicker");
     }
 
+    /**
+     * Switch to SettingsFragment
+     */
     @Override
     public void requestSettings() {
         this.replaceFragment(SettingsFragment.newInstance());
     }
 
+    /**
+     * Set the article list resulting of the user query
+     * @param articles
+     */
     @Override
     public void setArticleList(ArrayList<Article> articles) {
         this.articleList = articles;
     }
 
+    /**
+     * Switch to ArticleListFragment
+     */
     @Override
     public void requestArticleList() {
         this.replaceFragment(ArticleListFragment.newInstance());
     }
 
+    /**
+     * Switch to SavedListFragment
+     */
     @Override
     public void requestSavedList() {
         this.replaceFragment(SavedListFragment.newInstance());
     }
 
+    /**
+     * Switch to HistoryFragment
+     */
     @Override
     public void requestHistory() {
         this.replaceFragment(HistoryFragment.newInstance());
     }
 
+    /**
+     * Put a query into the History table into DB
+     * @param query
+     */
     @Override
     public void addIntoHistory(String query) {
         this.historyDao.insert(new History(query));
     }
 
+    /**
+     * If saved list isn't empty return all the saved articles list,
+     * or an empty arraylist if empty
+     * @return
+     */
     @Override
     public List<Article> getSavedList() {
         return this.savedArticleDao.count() == 0 ? new ArrayList<Article>() : this.savedArticleDao.loadAll();
     }
 
+    /**
+     * Update the from date option in settings
+     * @param from
+     */
     @Override
     public void updateFrom(String from) {
         this.settings.setFrom(from);
     }
 
+    /**
+     * Update the to date option in settings
+     * @param to
+     */
     @Override
     public void updateTo(String to) {
         this.settings.setTo(to);
     }
 
+    /**
+     * Return true if the article is saved in the DB and not into the "ToDelete" list,
+     * else it will return false
+     * @param article
+     * @param fragment
+     * @return
+     */
     @Override
     public boolean isSaved(Article article, int fragment) {
         boolean isSaved = false;
@@ -260,16 +351,28 @@ public class MainActivity extends AppCompatActivity implements
         return fragment == MainActivity.SAVED_FRAGMENT ? (isSaved && !inToDeleteList) : isSaved;
     }
 
+    /**
+     * Add an article in the toDelete list
+     * @param article
+     */
     @Override
     public void addToDelete(Article article) {
         this.toDelete.add(article);
     }
 
+    /**
+     * Remove an article from the toDelete list
+     * @param article
+     */
     @Override
     public void removeToDelete(Article article) {
         this.toDelete.remove(article);
     }
 
+    /**
+     * Open the website corresponding to the URL field of the article
+     * @param article
+     */
     @Override
     public void requestWebsite(Article article) {
         String url = article.getUrl();
@@ -279,11 +382,29 @@ public class MainActivity extends AppCompatActivity implements
         Toast.makeText(getApplicationContext(), R.string.loading_text, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Return the saved copy instance in DB of an article
+     * @param article
+     * @return
+     */
+    @Override
+    public Article getCopyInSaved(Article article) {
+        return this.getCopySavedOf(article);
+    }
+
+    /**
+     * If history isn't empty return the history list,
+     * else it will return an empty arraylist
+     * @return
+     */
     @Override
     public List<History> getHistory() {
         return historyDao.count() == 0 ? new ArrayList<History>() : historyDao.loadAll();
     }
 
+    /**
+     * Remove all queries into history DB
+     */
     @Override
     public void clearHistory() {
         this.historyDao.deleteAll();

@@ -23,6 +23,7 @@ public class HistoryFragment extends Fragment {
 
     private HistoryFragmentListener mListener;
     private ListView lv_history;
+    private TextView emptyText;
     private ArrayAdapter<String> adapter;
     private View view;
 
@@ -52,13 +53,17 @@ public class HistoryFragment extends Fragment {
         }
 
         this.lv_history = (ListView) view.findViewById(R.id.history);
+        this.emptyText = (TextView) view.findViewById(R.id.empty_history);
 
         if (!queries.isEmpty()) {
             this.adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, queries);
             lv_history.setAdapter(adapter);
+            lv_history.setVisibility(View.VISIBLE);
+            emptyText.setVisibility(View.INVISIBLE);
         } else {
-            TextView emptyText = (TextView) view.findViewById(R.id.empty_history);
-            lv_history.setEmptyView(emptyText);
+            lv_history.setVisibility(View.INVISIBLE);
+            emptyText.setVisibility(View.VISIBLE);
+            //lv_history.setEmptyView(emptyText);
         }
 
         return view;
@@ -91,9 +96,9 @@ public class HistoryFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.delete_history) {
+            lv_history.setVisibility(View.INVISIBLE);
+            emptyText.setVisibility(View.VISIBLE);
             mListener.clearHistory();
-            TextView emptyText = (TextView) view.findViewById(R.id.empty_history);
-            lv_history.setEmptyView(emptyText);
         }
 
         return super.onOptionsItemSelected(item);
