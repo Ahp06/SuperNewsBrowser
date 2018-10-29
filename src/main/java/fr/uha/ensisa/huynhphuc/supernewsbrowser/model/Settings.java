@@ -9,6 +9,8 @@ import java.util.Calendar;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.BuildConfig;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Unique;
 
@@ -19,24 +21,27 @@ public class Settings implements Parcelable {
     private final static String API_KEY = BuildConfig.ApiKey;
     private String queryWithSettings;
 
-    @Unique
+    @Id
+    private Long id;
+
     @Property(nameInDb = "LANGUAGE")
+    @Index(unique = true)
     private String language;
 
-    @Unique
     @Property(nameInDb = "PAGESIZE")
+    @Index(unique = true)
     private String pageSize;
 
-    @Unique
     @Property(nameInDb = "SORTBY")
+    @Index(unique = true)
     private String sortBy;
 
-    @Unique
     @Property(nameInDb = "FROM")
+    @Index(unique = true)
     private String from;
 
-    @Unique
     @Property(nameInDb = "TO")
+    @Index(unique = true)
     private String to;
 
 
@@ -82,10 +87,11 @@ public class Settings implements Parcelable {
         to = in.readString();
     }
 
-    @Generated(hash = 1602290261)
-    public Settings(String queryWithSettings, String language, String pageSize, String sortBy,
-            String from, String to) {
+    @Generated(hash = 1598426357)
+    public Settings(String queryWithSettings, Long id, String language, String pageSize,
+            String sortBy, String from, String to) {
         this.queryWithSettings = queryWithSettings;
+        this.id = id;
         this.language = language;
         this.pageSize = pageSize;
         this.sortBy = sortBy;
@@ -214,5 +220,13 @@ public class Settings implements Parcelable {
 
     public void setQueryWithSettings(String queryWithSettings) {
         this.queryWithSettings = queryWithSettings;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

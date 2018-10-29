@@ -39,14 +39,16 @@ public class MainActivity extends AppCompatActivity implements
         CommentFragment.CommentFragmentListener,
         HistoryFragment.HistoryFragmentListener {
 
+    //Temporary data
     private ArrayList<Article> articleList;
     private ArrayList<Article> toDelete;
-    private Settings settings;
 
+    //DAOs
     private ArticleDao savedArticleDao;
     private HistoryDao historyDao;
     private SettingsDao settingsDao;
 
+    //Constants
     public static final int COMMENT_FRAGMENT = 0;
     public static final int SAVED_FRAGMENT = 1;
     public static final int LIST_FRAGMENT = 2;
@@ -64,14 +66,16 @@ public class MainActivity extends AppCompatActivity implements
         historyDao = daoSession.getHistoryDao();
 
         if (this.articleList == null) this.articleList = new ArrayList<Article>();
-        if (this.settings == null) this.settings = new Settings();
         if (this.toDelete == null) this.toDelete = new ArrayList<Article>();
+        if(this.settingsDao.count() == 0) this.settingsDao.insert(new Settings());
 
+        //Loading the first fragment
         this.replaceFragment(HomeFragment.newInstance());
     }
 
     /**
      * Replace the fragment in the fragment container of the MainActivity
+     *
      * @param someFragment
      */
     public void replaceFragment(Fragment someFragment) {
@@ -84,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Return true if all fields of the two articles are the same
+     *
      * @param a1
      * @param a2
      * @return
@@ -101,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Return the copy of the article saved in the saved list
+     *
      * @param article
      * @return
      */
@@ -143,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Return the article list resulting of the user query
+     *
      * @return
      */
     @Override
@@ -152,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Save an article in the DB
+     *
      * @param article
      */
     @Override
@@ -162,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Cancel the save of an article in the fragment article list,
      * delete the saved article in the DB
+     *
      * @param article
      */
     @Override
@@ -172,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Switch to CommentFragment
+     *
      * @param article
      */
     @Override
@@ -201,20 +211,22 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Return the settings of the application
+     *
      * @return
      */
     @Override
     public Settings getSettings() {
-        return this.settings;
+        return this.settingsDao.count() == 0 ? new Settings() : this.settingsDao.loadAll().get(0);
     }
 
     /**
      * Update settings of the application
+     *
      * @param settings
      */
     @Override
     public void updateSettings(Settings settings) {
-        this.settings = settings;
+        this.settingsDao.update(settings);
     }
 
     /**
@@ -227,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Open the Date picker dialog corresponding to the ID in parameter
+     *
      * @param ID
      * @throws ParseException
      */
@@ -234,9 +247,9 @@ public class MainActivity extends AppCompatActivity implements
     public void requestDatePickerDialog(String ID) throws ParseException {
         DatePickerFragment datePickerFragment;
         if (ID == "from") {
-            datePickerFragment = new DatePickerFragment(ID, this.settings.getFrom());
+            datePickerFragment = new DatePickerFragment(ID, this.getSettings().getFrom());
         } else {
-            datePickerFragment = new DatePickerFragment(ID, this.settings.getTo());
+            datePickerFragment = new DatePickerFragment(ID, this.getSettings().getTo());
         }
 
         datePickerFragment.show(this.getSupportFragmentManager(), "datePicker");
@@ -252,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Set the article list resulting of the user query
+     *
      * @param articles
      */
     @Override
@@ -285,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Put a query into the History table into DB
+     *
      * @param query
      */
     @Override
@@ -295,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * If saved list isn't empty return all the saved articles list,
      * or an empty arraylist if empty
+     *
      * @return
      */
     @Override
@@ -304,25 +320,33 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Update the from date option in settings
+     *
      * @param from
      */
     @Override
     public void updateFrom(String from) {
-        this.settings.setFrom(from);
+        Settings settings = this.getSettings();
+        settings.setFrom(from);
+        this.settingsDao.update(settings);
     }
 
     /**
      * Update the to date option in settings
+     *
      * @param to
      */
     @Override
     public void updateTo(String to) {
-        this.settings.setTo(to);
+        Settings settings = this.getSettings();
+        settings.setTo(to);
+        this.settingsDao.update(settings);
+        Log.d("Settings", "Count = " + this.settingsDao.count());
     }
 
     /**
      * Return true if the article is saved in the DB and not into the "ToDelete" list,
      * else it will return false
+     *
      * @param article
      * @param fragment
      * @return
@@ -353,6 +377,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Add an article in the toDelete list
+     *
      * @param article
      */
     @Override
@@ -362,6 +387,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Remove an article from the toDelete list
+     *
      * @param article
      */
     @Override
@@ -371,6 +397,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Open the website corresponding to the URL field of the article
+     *
      * @param article
      */
     @Override
@@ -384,6 +411,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Return the saved copy instance in DB of an article
+     *
      * @param article
      * @return
      */
@@ -395,6 +423,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * If history isn't empty return the history list,
      * else it will return an empty arraylist
+     *
      * @return
      */
     @Override
