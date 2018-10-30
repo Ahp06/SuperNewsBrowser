@@ -152,5 +152,17 @@
     <string name="exit_message">Voulez vous vraiment quitter l\'application ?</string>
     <string name="exit_title_message">Quitter l\'application ?</string>
     <string name="default_settings_text">Paramètres par défaut</string>
+    <string name="root_title">Paramètres</string>
+    <string name="mode_preference">Choix du mode</string>
+    <string name="summary_mode_preference">Choisissez ce mode pour voir les top news récentes</string>
+    <string name="title_mode_preference">Top news</string>
+    <string name="title_country_list">Choix du pays</string>
+    <string name="title_language_list">Pays</string>
+    <string name="dialog_title_language_list">Choix du pays</string>
+    <string name="title_articles_number_list">Nombre d\'articles</string>
+    <string name="title_pageSize_list">Choix du nombre d\'articles</string>
+    <string name="dialog_pageSize_list">Nombres d\'articles</string>
+    <string name="title_sortBy_list">Tri des articles</string>
+    <string name="dialog_sortBy_list">Trier par</string>
 
 </resources>

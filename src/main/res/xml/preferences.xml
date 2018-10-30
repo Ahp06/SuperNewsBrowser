@@ -1,0 +1,43 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/root_title">
+
+    <PreferenceCategory>
+        <CheckBoxPreference
+            android:key="mode"
+            android:summary="@string/summary_mode_preference"
+            android:title="@string/title_mode_preference" />
+    </PreferenceCategory>
+
+    <PreferenceCategory>
+        <ListPreference
+            android:dialogTitle="@string/dialog_title_language_list"
+            android:entries="@array/language_array"
+            android:entryValues="@array/language_array"
+            android:key="language_list"
+            android:title="@string/title_language_list" />
+    </PreferenceCategory>
+
+    <PreferenceCategory>
+        <ListPreference
+            android:dialogTitle="@string/dialog_pageSize_list"
+            android:entries="@array/pageSize_array"
+            android:entryValues="@array/pageSize_array"
+            android:key="pageSize_list"
+            android:title="@string/title_pageSize_list" />
+    </PreferenceCategory>
+
+    <PreferenceCategory>
+        <ListPreference
+            android:dialogTitle="@string/dialog_sortBy_list"
+            android:entries="@array/sortBy_array"
+            android:entryValues="@array/sortBy_array"
+            android:key="sortBy_list"
+            android:title="@string/title_sortBy_list" />
+    </PreferenceCategory>
+
+    <PreferenceCategory>
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

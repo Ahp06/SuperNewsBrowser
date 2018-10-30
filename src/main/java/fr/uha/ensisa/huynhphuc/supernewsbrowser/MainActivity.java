@@ -20,6 +20,7 @@ import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.CommentFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.DatePickerFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.HistoryFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.HomeFragment;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.PrefsFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SavedListFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SettingsFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements
         SettingsFragment.SettingsFragmentListener,
         DatePickerFragment.DatePickerFragmentListener,
         CommentFragment.CommentFragmentListener,
-        HistoryFragment.HistoryFragmentListener {
+        HistoryFragment.HistoryFragmentListener,
+        PrefsFragment.PrefsFragmentListener{
 
     //Temporary data
     private ArrayList<Article> articleList;
@@ -274,7 +276,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void requestSettings() {
-        this.replaceFragment(SettingsFragment.newInstance());
+        //this.replaceFragment(SettingsFragment.newInstance());
+        this.replaceFragment(PrefsFragment.newInstance());
     }
 
     /**
