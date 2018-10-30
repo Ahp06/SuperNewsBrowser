@@ -31,6 +31,7 @@ public class SettingsFragment extends Fragment {
         void updateSettings(Settings settings);
         void requestHome();
         void requestDatePickerDialog(String ID) throws ParseException;
+        void setDefaultSettings();
     }
 
     public static Fragment newInstance() {
@@ -48,6 +49,7 @@ public class SettingsFragment extends Fragment {
         public final Button valid_button;
         public final Button date_picker_from;
         public final Button date_picker_to;
+        public final Button default_settings_button;
 
         public ViewHolder(View view) {
             language_spinner = (Spinner) view.findViewById(R.id.language_spinner);
@@ -58,6 +60,7 @@ public class SettingsFragment extends Fragment {
             date_picker_from = (Button) view.findViewById(R.id.date_picker_from);
             date_picker_to = (Button) view.findViewById(R.id.date_picker_to);
             valid_button = (Button) view.findViewById(R.id.valid_button);
+            default_settings_button = (Button) view.findViewById(R.id.default_settings_button);
             mView = view;
         }
     }
@@ -143,6 +146,15 @@ public class SettingsFragment extends Fragment {
                     e.printStackTrace();
                 }
 
+            }
+        });
+
+        viewHolder.default_settings_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.setDefaultSettings();
+                mListener.requestHome();
+                Toast.makeText(getContext(),R.string.default_settings_text,Toast.LENGTH_LONG).show();
             }
         });
 

@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (this.articleList == null) this.articleList = new ArrayList<Article>();
         if (this.toDelete == null) this.toDelete = new ArrayList<Article>();
-        if(this.settingsDao.count() == 0) this.settingsDao.insert(new Settings());
+        if (this.settingsDao.count() == 0) this.settingsDao.insert(new Settings());
 
         //Loading the first fragment
         this.replaceFragment(HomeFragment.newInstance());
@@ -255,6 +255,20 @@ public class MainActivity extends AppCompatActivity implements
         datePickerFragment.show(this.getSupportFragmentManager(), "datePicker");
     }
 
+    @Override
+    public void setDefaultSettings() {
+        Settings default_settings = new Settings();
+        Settings settings = this.getSettings();
+
+        settings.setTo(default_settings.getTo());
+        settings.setFrom(default_settings.getFrom());
+        settings.setLanguage(default_settings.getLanguage());
+        settings.setPageSize(default_settings.getPageSize());
+        settings.setSortBy(default_settings.getSortBy());
+
+        this.settingsDao.update(settings);
+    }
+
     /**
      * Switch to SettingsFragment
      */
@@ -340,7 +354,6 @@ public class MainActivity extends AppCompatActivity implements
         Settings settings = this.getSettings();
         settings.setTo(to);
         this.settingsDao.update(settings);
-        Log.d("Settings", "Count = " + this.settingsDao.count());
     }
 
     /**
