@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -86,18 +87,18 @@ public class DatePickerFragment extends DialogFragment
 
         if (this.id.equals("from")) {
             mListener.updateFrom(this.getDate());
-            ((TextView) ((SettingsFragment) this.getFragmentManager()
+            /*((TextView) ((SettingsFragment) this.getFragmentManager()
                     .findFragmentById(R.id.fragment_container))
                     .getView()
                     .findViewById(R.id.from_date_choosen))
-                    .setText(this.getDate());
+                    .setText(this.getDate());*/
         } else {
             mListener.updateTo(this.getDate());
-            ((TextView) ((SettingsFragment) this.getFragmentManager()
+            /*((TextView) ((SettingsFragment) this.getFragmentManager()
                     .findFragmentById(R.id.fragment_container))
                     .getView()
                     .findViewById(R.id.to_date_choosen))
-                    .setText(this.getDate());
+                    .setText(this.getDate());*/
         }
     }
 

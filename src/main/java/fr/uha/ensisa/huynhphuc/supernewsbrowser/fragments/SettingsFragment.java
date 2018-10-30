@@ -24,7 +24,7 @@ import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
 
 public class SettingsFragment extends Fragment {
 
-    private SettingsFragmentListener mListener;
+    /*private SettingsFragmentListener mListener;
 
     public interface SettingsFragmentListener {
         Settings getSettings();
@@ -196,7 +196,7 @@ public class SettingsFragment extends Fragment {
      * @param myString
      * @return
      */
-    public int getIndex(Spinner spinner, String myString) {
+    /*public int getIndex(Spinner spinner, String myString) {
         int index = 0;
         for (int i = 0; i < spinner.getCount(); i++) {
             if (spinner.getItemAtPosition(i).equals(myString)) {
@@ -222,5 +222,5 @@ public class SettingsFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
+    */
 }

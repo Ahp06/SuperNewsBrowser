@@ -1,9 +1,12 @@
 package fr.uha.ensisa.huynhphuc.supernewsbrowser;
 
+import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -35,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements
         HomeFragment.HomeFragmentListener,
         ArticleListFragment.ArticleListFragmentListener,
         SavedListFragment.SavedFragmentListener,
-        SettingsFragment.SettingsFragmentListener,
         DatePickerFragment.DatePickerFragmentListener,
         CommentFragment.CommentFragmentListener,
         HistoryFragment.HistoryFragmentListener,
@@ -48,7 +50,11 @@ public class MainActivity extends AppCompatActivity implements
     //DAOs
     private ArticleDao savedArticleDao;
     private HistoryDao historyDao;
-    private SettingsDao settingsDao;
+    //private SettingsDao settingsDao;
+
+    //Settings
+    private SharedPreferences sharedPreferences;
+    private Settings settings;
 
     //Constants
     public static final int COMMENT_FRAGMENT = 0;
@@ -64,15 +70,40 @@ public class MainActivity extends AppCompatActivity implements
         // get all DAOs 
         DaoSession daoSession = ((App) getApplication()).getDaoSession();
         savedArticleDao = daoSession.getArticleDao();
-        settingsDao = daoSession.getSettingsDao();
+        //settingsDao = daoSession.getSettingsDao();
         historyDao = daoSession.getHistoryDao();
 
         if (this.articleList == null) this.articleList = new ArrayList<Article>();
         if (this.toDelete == null) this.toDelete = new ArrayList<Article>();
-        if (this.settingsDao.count() == 0) this.settingsDao.insert(new Settings());
+        //if (this.settingsDao.count() == 0) this.settingsDao.insert(new Settings());
+        if(sharedPreferences == null){
+            this.sharedPreferences = PreferenceManager.
+                    getDefaultSharedPreferences(this);
+            this.settings = new Settings();
+        }
+
+        this.updateSettings();
 
         //Loading the first fragment
         this.replaceFragment(HomeFragment.newInstance());
+    }
+
+    public void updateSettings() {
+
+        Settings defaultSettings = new Settings();
+
+        //this.getSettings().setTopNewsMode(sharedPreferences.getBoolean("mode",false));
+        this.settings.setLanguage(sharedPreferences
+                .getString("language_list",defaultSettings.getLanguage()));
+        this.settings.setPageSize(sharedPreferences
+                .getString("pageSize_list",defaultSettings.getPageSize()));
+        this.settings.setSortBy(sharedPreferences
+                .getString("sortBy_list",defaultSettings.getSortBy()));
+
+        //this.setfdefaultSettings.getFrom();
+        //String to = defaultSettings.getTo();
+
+
     }
 
     /**
@@ -218,25 +249,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public Settings getSettings() {
-        return this.settingsDao.count() == 0 ? new Settings() : this.settingsDao.loadAll().get(0);
-    }
-
-    /**
-     * Update settings of the application
-     *
-     * @param settings
-     */
-    @Override
-    public void updateSettings(Settings settings) {
-        this.settingsDao.update(settings);
-    }
-
-    /**
-     * Switch to HomeFragment
-     */
-    @Override
-    public void requestHome() {
-        this.replaceFragment(HomeFragment.newInstance());
+        return this.settings;
+        //return this.settingsDao.count() == 0 ? new Settings() : this.settingsDao.loadAll().get(0);
     }
 
     /**
@@ -268,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements
         settings.setPageSize(default_settings.getPageSize());
         settings.setSortBy(default_settings.getSortBy());
 
-        this.settingsDao.update(settings);
+        //this.settingsDao.update(settings);
     }
 
     /**
@@ -342,9 +356,10 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void updateFrom(String from) {
-        Settings settings = this.getSettings();
+        /*Settings settings = this.getSettings();
         settings.setFrom(from);
-        this.settingsDao.update(settings);
+        this.settingsDao.update(settings);*/
+        this.getSettings().setFrom(from);
     }
 
     /**
@@ -354,9 +369,10 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void updateTo(String to) {
-        Settings settings = this.getSettings();
+        /*Settings settings = this.getSettings();
         settings.setTo(to);
-        this.settingsDao.update(settings);
+        this.settingsDao.update(settings);*/
+        this.getSettings().setTo(to);
     }
 
     /**

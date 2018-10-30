@@ -153,7 +153,7 @@ public class HomeFragment extends Fragment {
     public void executeQueryWithSettings() {
         if (!this.query.getText().toString().equals("")) {
             String query = this.query.getText().toString();
-            Log.d("query", "=" + query);
+            Log.d("NewsBrowser", "Query = " + query);
             mListener.addIntoHistory(query);
             new ArticleHttpRequest().execute(mListener.getSettings().applySettings(query));
         } else {

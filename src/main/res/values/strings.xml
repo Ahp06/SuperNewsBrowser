@@ -154,7 +154,7 @@
     <string name="default_settings_text">Paramètres par défaut</string>
     <string name="root_title">Paramètres</string>
     <string name="mode_preference">Choix du mode</string>
-    <string name="summary_mode_preference">Choisissez ce mode pour voir les top news récentes</string>
+    <string name="summary_mode_preference">Choisissez ce mode pour voir les meilleures news récentes</string>
     <string name="title_mode_preference">Top news</string>
     <string name="title_country_list">Choix du pays</string>
     <string name="title_language_list">Pays</string>
@@ -164,5 +164,10 @@
     <string name="dialog_pageSize_list">Nombres d\'articles</string>
     <string name="title_sortBy_list">Tri des articles</string>
     <string name="dialog_sortBy_list">Trier par</string>
+    <string name="pref_select_from_date">Date de début</string>
+    <string name="pref_date_choice">Choix des dates</string>
+    <string name="pref_select_to_date">Date de fin</string>
+    <string name="from_date_summary" />
+    <string name="to_date_summary" />
 
 </resources>
