@@ -8,41 +8,24 @@ import org.greenrobot.greendao.annotation.Entity;
 import java.util.Calendar;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.BuildConfig;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Unique;
 
-@Entity
 public class Settings implements Parcelable {
 
     private final static String BASE_URL = "https://newsapi.org/v2/everything?";
     private final static String API_KEY = BuildConfig.ApiKey;
     private String queryWithSettings;
-
-    @Id
-    private Long id;
-
-    @Property(nameInDb = "LANGUAGE")
-    @Index(unique = true)
     private String language;
-
-    @Property(nameInDb = "PAGESIZE")
-    @Index(unique = true)
     private String pageSize;
-
-    @Property(nameInDb = "SORTBY")
-    @Index(unique = true)
     private String sortBy;
-
-    @Property(nameInDb = "FROM")
-    @Index(unique = true)
     private String from;
-
-    @Property(nameInDb = "TO")
-    @Index(unique = true)
     private String to;
+    //private boolean topNewsMode;
 
 
     public Settings(String language, String pageSize, String sortBy, String from, String to) {
@@ -54,7 +37,7 @@ public class Settings implements Parcelable {
     }
 
     //default settings
-    public Settings(){
+    public Settings() {
         Calendar current = Calendar.getInstance();
         int current_year = current.get(Calendar.YEAR);
         int current_day = current.get(Calendar.DAY_OF_MONTH);
@@ -85,18 +68,6 @@ public class Settings implements Parcelable {
         sortBy = in.readString();
         from = in.readString();
         to = in.readString();
-    }
-
-    @Generated(hash = 1598426357)
-    public Settings(String queryWithSettings, Long id, String language, String pageSize,
-            String sortBy, String from, String to) {
-        this.queryWithSettings = queryWithSettings;
-        this.id = id;
-        this.language = language;
-        this.pageSize = pageSize;
-        this.sortBy = sortBy;
-        this.from = from;
-        this.to = to;
     }
 
     public static final Creator<Settings> CREATOR = new Creator<Settings>() {
@@ -152,7 +123,7 @@ public class Settings implements Parcelable {
     }
 
 
-    public String applySettings(String query){
+    public String applySettings(String query) {
 
         StringBuilder queryWithSettings = new StringBuilder();
 
@@ -165,18 +136,18 @@ public class Settings implements Parcelable {
         queryWithSettings.append("&");
 
         String sortMethod = "publishedAt";
-        if(sortBy.equals("Popularité")) sortMethod ="popularity";
-        if(sortBy.equals("Pertinence")) sortMethod ="relevancy";
-        if(sortBy.equals("Date")) sortMethod ="publishedAt";
+        if (sortBy.equals("Popularité")) sortMethod = "popularity";
+        if (sortBy.equals("Pertinence")) sortMethod = "relevancy";
+        if (sortBy.equals("Date")) sortMethod = "publishedAt";
 
         queryWithSettings.append("sortBy=" + sortMethod);
         queryWithSettings.append("&");
 
-        if(from != ""){
+        if (from != "") {
             queryWithSettings.append("from=" + from);
             queryWithSettings.append("&");
         }
-        if(to != ""){
+        if (to != "") {
             queryWithSettings.append("to=" + to);
             queryWithSettings.append("&");
         }
@@ -220,13 +191,5 @@ public class Settings implements Parcelable {
 
     public void setQueryWithSettings(String queryWithSettings) {
         this.queryWithSettings = queryWithSettings;
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }

@@ -1,6 +1,5 @@
 package fr.uha.ensisa.huynhphuc.supernewsbrowser;
 
-import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,23 +24,20 @@ import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.HistoryFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.HomeFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.PrefsFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SavedListFragment;
-import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.SettingsFragment;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.ArticleDao;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.DaoSession;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.History;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.HistoryDao;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
-import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.SettingsDao;
 
 public class MainActivity extends AppCompatActivity implements
         HomeFragment.HomeFragmentListener,
         ArticleListFragment.ArticleListFragmentListener,
         SavedListFragment.SavedFragmentListener,
-        DatePickerFragment.DatePickerFragmentListener,
         CommentFragment.CommentFragmentListener,
         HistoryFragment.HistoryFragmentListener,
-        PrefsFragment.PrefsFragmentListener{
+        PrefsFragment.PrefsFragmentListener {
 
     //Temporary data
     private ArrayList<Article> articleList;
@@ -50,11 +46,9 @@ public class MainActivity extends AppCompatActivity implements
     //DAOs
     private ArticleDao savedArticleDao;
     private HistoryDao historyDao;
-    //private SettingsDao settingsDao;
-
     //Settings
     private SharedPreferences sharedPreferences;
-    private Settings settings;
+    //private Settings settings;
 
     //Constants
     public static final int COMMENT_FRAGMENT = 0;
@@ -70,40 +64,13 @@ public class MainActivity extends AppCompatActivity implements
         // get all DAOs 
         DaoSession daoSession = ((App) getApplication()).getDaoSession();
         savedArticleDao = daoSession.getArticleDao();
-        //settingsDao = daoSession.getSettingsDao();
         historyDao = daoSession.getHistoryDao();
 
         if (this.articleList == null) this.articleList = new ArrayList<Article>();
         if (this.toDelete == null) this.toDelete = new ArrayList<Article>();
-        //if (this.settingsDao.count() == 0) this.settingsDao.insert(new Settings());
-        if(sharedPreferences == null){
-            this.sharedPreferences = PreferenceManager.
-                    getDefaultSharedPreferences(this);
-            this.settings = new Settings();
-        }
-
-        this.updateSettings();
 
         //Loading the first fragment
         this.replaceFragment(HomeFragment.newInstance());
-    }
-
-    public void updateSettings() {
-
-        Settings defaultSettings = new Settings();
-
-        //this.getSettings().setTopNewsMode(sharedPreferences.getBoolean("mode",false));
-        this.settings.setLanguage(sharedPreferences
-                .getString("language_list",defaultSettings.getLanguage()));
-        this.settings.setPageSize(sharedPreferences
-                .getString("pageSize_list",defaultSettings.getPageSize()));
-        this.settings.setSortBy(sharedPreferences
-                .getString("sortBy_list",defaultSettings.getSortBy()));
-
-        //this.setfdefaultSettings.getFrom();
-        //String to = defaultSettings.getTo();
-
-
     }
 
     /**
@@ -249,26 +216,22 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public Settings getSettings() {
-        return this.settings;
-        //return this.settingsDao.count() == 0 ? new Settings() : this.settingsDao.loadAll().get(0);
-    }
 
-    /**
-     * Open the Date picker dialog corresponding to the ID in parameter
-     *
-     * @param ID
-     * @throws ParseException
-     */
-    @Override
-    public void requestDatePickerDialog(String ID) throws ParseException {
-        DatePickerFragment datePickerFragment;
-        if (ID == "from") {
-            datePickerFragment = new DatePickerFragment(ID, this.getSettings().getFrom());
-        } else {
-            datePickerFragment = new DatePickerFragment(ID, this.getSettings().getTo());
-        }
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Settings settings = new Settings();
 
-        datePickerFragment.show(this.getSupportFragmentManager(), "datePicker");
+        //this.getSettings().setTopNewsMode(sharedPreferences.getBoolean("mode",false));
+        String language = sharedPreferences.getString("language_list", settings.getLanguage());
+        String pageSize = sharedPreferences.getString("pageSize_list", settings.getPageSize());
+        String sortBy = sharedPreferences.getString("sortBy_list", settings.getSortBy());
+
+        settings.setLanguage(language);
+        settings.setPageSize(pageSize);
+        settings.setSortBy(sortBy);
+
+        //from & to preferences
+
+        return settings;
     }
 
     @Override
@@ -281,8 +244,6 @@ public class MainActivity extends AppCompatActivity implements
         settings.setLanguage(default_settings.getLanguage());
         settings.setPageSize(default_settings.getPageSize());
         settings.setSortBy(default_settings.getSortBy());
-
-        //this.settingsDao.update(settings);
     }
 
     /**
@@ -290,7 +251,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void requestSettings() {
-        //this.replaceFragment(SettingsFragment.newInstance());
         this.replaceFragment(PrefsFragment.newInstance());
     }
 
@@ -347,32 +307,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public List<Article> getSavedList() {
         return this.savedArticleDao.count() == 0 ? new ArrayList<Article>() : this.savedArticleDao.loadAll();
-    }
-
-    /**
-     * Update the from date option in settings
-     *
-     * @param from
-     */
-    @Override
-    public void updateFrom(String from) {
-        /*Settings settings = this.getSettings();
-        settings.setFrom(from);
-        this.settingsDao.update(settings);*/
-        this.getSettings().setFrom(from);
-    }
-
-    /**
-     * Update the to date option in settings
-     *
-     * @param to
-     */
-    @Override
-    public void updateTo(String to) {
-        /*Settings settings = this.getSettings();
-        settings.setTo(to);
-        this.settingsDao.update(settings);*/
-        this.getSettings().setTo(to);
     }
 
     /**
