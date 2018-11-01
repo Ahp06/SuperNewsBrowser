@@ -1,31 +1,27 @@
 package fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments;
 
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.DatePicker;
 
 import java.text.ParseException;
-import java.util.Calendar;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
 
 public class PrefsFragment extends PreferenceFragmentCompat implements
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        DatePickerDialog.OnDateSetListener {
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private PrefsFragmentListener mListener;
     private SharedPreferences sharedPreferences;
-    private String from;
-    private String to;
-
+    private DatePickerFragment datepicker_from;
+    private DatePickerFragment datepicker_to;
 
     public interface PrefsFragmentListener {
         Settings getSettings();
@@ -48,38 +44,6 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
             Log.d("PrefsFragment", key + " = " + choice);
         }
 
-        if (key.equals("pref_select_from_date")) {
-            Preference fromPref = findPreference(key);
-            //set summary
-        }
-
-        if (key.equals("pref_select_to_date")) {
-            Preference toPref = findPreference(key);
-            //set summary
-        }
-
-    }
-
-    private void showDateDialog(String ID) {
-        // Use the current date as the default date in the picker
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
-
-        if (ID.equals("from")) {
-            this.from = year + "-" + (month + 1) + "-" + day;
-        } else {
-            this.to = year + "-" + (month + 1) + "-" + day;
-        }
-
-        new DatePickerDialog(this.getContext(), this, year, month, day).show();
-
-    }
-
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
     }
 
     @Override
@@ -99,18 +63,57 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.preferences);
+        this.initSummaries();
+    }
+
+    private void initSummaries() {
+
+        Settings settings = mListener.getSettings();
+
+        Preference languagePref = (Preference) findPreference("language_list");
+        Preference pageSizePref = (Preference) findPreference("pageSize_list");
+        Preference sortByPref = (Preference) findPreference("sortBy_list");
+        Preference fromPref = (Preference) findPreference("pref_select_from_date");
+        Preference toPref = (Preference) findPreference("pref_select_to_date");
+
+        languagePref.setSummary(sharedPreferences.getString("language_list", settings.getLanguage()));
+        pageSizePref.setSummary(sharedPreferences.getString("pageSize_list", settings.getPageSize()));
+        sortByPref.setSummary(sharedPreferences.getString("sortBy_list", settings.getSortBy()));
+        fromPref.setSummary(settings.getFrom());
+        toPref.setSummary(settings.getTo());
+    }
+
+    @Override
     public void onCreatePreferences(Bundle bundle, String s) {
 
         //Load preferences xml file
         setPreferencesFromResource(R.xml.preferences, s);
+        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        Settings settings = mListener.getSettings();
 
         Preference fromPref = (Preference) findPreference("pref_select_from_date");
         Preference toPref = (Preference) findPreference("pref_select_to_date");
 
+        try {
+            datepicker_from = new DatePickerFragment("from",
+                    sharedPreferences.getString("from", settings.getFrom()));
+
+            datepicker_to = new DatePickerFragment("to",
+                    sharedPreferences.getString("to", settings.getTo()));
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
         fromPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                showDateDialog("from");
+                datepicker_from.show(getFragmentManager(), "datepicker");
                 return false;
             }
         });
@@ -118,7 +121,7 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
         toPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                showDateDialog("to");
+                datepicker_to.show(getFragmentManager(), "datepicker");
                 return false;
             }
         });

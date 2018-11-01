@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity implements
         SavedListFragment.SavedFragmentListener,
         CommentFragment.CommentFragmentListener,
         HistoryFragment.HistoryFragmentListener,
-        PrefsFragment.PrefsFragmentListener {
+        PrefsFragment.PrefsFragmentListener,
+        DatePickerFragment.DatePickerFragmentListener {
 
     //Temporary data
     private ArrayList<Article> articleList;
@@ -46,9 +47,11 @@ public class MainActivity extends AppCompatActivity implements
     //DAOs
     private ArticleDao savedArticleDao;
     private HistoryDao historyDao;
+
     //Settings
     private SharedPreferences sharedPreferences;
-    //private Settings settings;
+    private String from;
+    private String to;
 
     //Constants
     public static final int COMMENT_FRAGMENT = 0;
@@ -228,10 +231,20 @@ public class MainActivity extends AppCompatActivity implements
         settings.setLanguage(language);
         settings.setPageSize(pageSize);
         settings.setSortBy(sortBy);
-
-        //from & to preferences
+        if (from != null) settings.setFrom(this.from);
+        if (to != null) settings.setTo(this.to);
 
         return settings;
+    }
+
+    @Override
+    public void update(String ID, String value) {
+        if (ID == "from") {
+            this.from = value;
+        } else {
+            this.to = value;
+        }
+        Log.d("DatePicker","ID = " + ID + ", value = " + value);
     }
 
     @Override

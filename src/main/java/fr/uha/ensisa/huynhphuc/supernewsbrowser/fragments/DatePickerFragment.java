@@ -3,22 +3,35 @@ package fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.widget.DatePicker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
+
 @SuppressLint("ValidFragment")
-public class DatePickerFragment extends DialogFragment {
+public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private String date;
-    private String id; // from or to
+    private String id;
     private int year;
     private int month;
     private int day;
+
+    private DatePickerFragmentListener mListener;
+
+    public interface DatePickerFragmentListener {
+        Settings getSettings();
+
+        void update(String ID, String value);
+    }
 
     public DatePickerFragment(String id, String date) throws ParseException {
         this.id = id;
@@ -53,38 +66,36 @@ public class DatePickerFragment extends DialogFragment {
         String from = before_year + "-" + (before_month + 1) + "-" + before_day;
 
         //Set min date because the free version of NewsApi allows only a gap of one month between the two dates
-        DatePickerDialog dialog = new DatePickerDialog(getActivity(), null, this.year, this.month, this.day);
+        DatePickerDialog dialog = new DatePickerDialog(getActivity(), this, this.year, this.month, this.day);
         dialog.getDatePicker().setMinDate(before.getTimeInMillis());
 
         return dialog;
     }
 
-
-    /*public void onDateSet(DatePicker view, int year, int month, int day) {
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int day) {
         this.date = year + "-" + (month + 1) + "-" + day;
 
-        if (this.id.equals("from")) {
-            mListener.updateFrom(this.getDate());
-            ((TextView) ((SettingsFragment) this.getFragmentManager()
+        if (this.id == "from") {
+            mListener.update("from", this.getDate());
+            ((PrefsFragment) this.getFragmentManager()
                     .findFragmentById(R.id.fragment_container))
-                    .getView()
-                    .findViewById(R.id.from_date_choosen))
-                    .setText(this.getDate());
+                    .findPreference("pref_select_from_date")
+                    .setSummary(this.date);
         } else {
-            mListener.updateTo(this.getDate());
-            ((TextView) ((SettingsFragment) this.getFragmentManager()
+            mListener.update("to", this.getDate());
+            ((PrefsFragment) this.getFragmentManager()
                     .findFragmentById(R.id.fragment_container))
-                    .getView()
-                    .findViewById(R.id.to_date_choosen))
-                    .setText(this.getDate());
+                    .findPreference("pref_select_to_date")
+                    .setSummary(this.date);
         }
-    }*/
+    }
 
     public String getDate() {
         return date;
     }
 
-    /*@Override
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof DatePickerFragmentListener) {
@@ -99,5 +110,5 @@ public class DatePickerFragment extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }*/
+    }
 }
