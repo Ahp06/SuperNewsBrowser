@@ -212,6 +212,12 @@ public class MainActivity extends AppCompatActivity implements
         this.toDelete.clear();
     }
 
+    @Override
+    public void clearSaved() {
+        Log.d("saved list", "=" + this.savedArticleDao.loadAll());
+        this.toDelete.addAll(this.savedArticleDao.loadAll());
+    }
+
     /**
      * Return the settings of the application
      *
@@ -244,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             this.to = value;
         }
-        Log.d("DatePicker","ID = " + ID + ", value = " + value);
+        Log.d("DatePicker", "ID = " + ID + ", value = " + value);
     }
 
     @Override

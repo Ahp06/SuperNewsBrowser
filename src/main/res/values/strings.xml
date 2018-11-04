@@ -158,12 +158,12 @@
     <string name="title_mode_preference">Top news</string>
     <string name="title_country_list">Choix du pays</string>
     <string name="title_language_list">Pays</string>
-    <string name="dialog_title_language_list">Choix du pays</string>
+    <string name="dialog_title_language_list">Choix du pays : </string>
     <string name="title_articles_number_list">Nombre d\'articles</string>
-    <string name="title_pageSize_list">Choix du nombre d\'articles</string>
-    <string name="dialog_pageSize_list">Nombres d\'articles</string>
+    <string name="title_pageSize_list">Nombre d\'articles</string>
+    <string name="dialog_pageSize_list">Choix du nombre d\'articles : </string>
     <string name="title_sortBy_list">Tri des articles</string>
-    <string name="dialog_sortBy_list">Trier par</string>
+    <string name="dialog_sortBy_list">Trier par : </string>
     <string name="pref_select_from_date">Date de début</string>
     <string name="pref_date_choice">Choix des dates</string>
     <string name="pref_select_to_date">Date de fin</string>

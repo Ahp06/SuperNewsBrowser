@@ -37,11 +37,35 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-        if (key.equals("language_list") || key.equals("pageSize_list") || key.equals("sortBy_list")) {
-            Preference listPref = findPreference(key);
+        Preference listPref = findPreference(key);
+        Preference datePref = findPreference("pref_date_choice");
+        Preference sortBy = findPreference("sortBy_list");
+
+        if (key.equals("language_list") || key.equals("pageSize_list")) {
             String choice = sharedPreferences.getString(key, "");
             listPref.setSummary(choice);
             Log.d("PrefsFragment", key + " = " + choice);
+        }
+
+        if(key.equals("sortBy_list")){
+            String sort = sharedPreferences.getString("sortBy_list","");
+            sortBy.setSummary(sort);
+            if(sort.equals("Date")){
+               datePref.setVisible(true);
+            } else {
+                datePref.setVisible(false);
+            }
+        }
+
+        if(key.equals("top_news_mode")){
+            boolean topNews = sharedPreferences.getBoolean("top_news_mode",false);
+            if(topNews){
+                datePref.setVisible(false);
+                sortBy.setVisible(false);
+            } else {
+                datePref.setVisible(true);
+                sortBy.setVisible(true);
+            }
         }
 
     }
@@ -65,7 +89,6 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
         this.initSummaries();
     }
 
@@ -84,6 +107,17 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
         sortByPref.setSummary(sharedPreferences.getString("sortBy_list", settings.getSortBy()));
         fromPref.setSummary(settings.getFrom());
         toPref.setSummary(settings.getTo());
+
+        Preference datePref = findPreference("pref_date_choice");
+        String sort = sharedPreferences.getString("sortBy_list","");
+
+        if(sort.equals("Date")){
+            datePref.setVisible(true);
+        } else {
+            datePref.setVisible(false);
+        }
+
+
     }
 
     @Override

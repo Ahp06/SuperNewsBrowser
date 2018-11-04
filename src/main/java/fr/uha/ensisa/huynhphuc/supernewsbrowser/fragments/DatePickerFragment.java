@@ -82,6 +82,8 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
                     .findFragmentById(R.id.fragment_container))
                     .findPreference("pref_select_from_date")
                     .setSummary(this.date);
+            //non persistent, faire un set value ou un put String avant
+
         } else {
             mListener.update("to", this.getDate());
             ((PrefsFragment) this.getFragmentManager()

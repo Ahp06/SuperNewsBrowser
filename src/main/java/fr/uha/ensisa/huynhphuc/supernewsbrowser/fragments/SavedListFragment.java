@@ -4,10 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,7 +45,11 @@ public class SavedListFragment extends Fragment {
 
         void requestComment(Article article);
 
+        void requestWebsite(Article article);
+
         void deleteArticlesToDelete();
+
+        void clearSaved();
     }
 
 
@@ -59,9 +67,26 @@ public class SavedListFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.saved_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.delete_saved) {
+            mListener.clearSaved();
+            getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view;
+        this.setHasOptionsMenu(true);
         if (!mListener.getSavedList().isEmpty()) {
             view = inflater.inflate(R.layout.fragment_article_list, container, false);
         } else {
@@ -72,6 +97,8 @@ public class SavedListFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
+            DividerItemDecoration itemDecor = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+            recyclerView.addItemDecoration(itemDecor);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(new SavedListAdapter());
         }
@@ -185,6 +212,13 @@ public class SavedListFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mListener.requestComment(article);
+                }
+            });
+
+            viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.requestWebsite(article);
                 }
             });
 
