@@ -18,22 +18,25 @@ import org.greenrobot.greendao.annotation.Unique;
 public class Settings implements Parcelable {
 
     private final static String BASE_URL = "https://newsapi.org/v2/everything?";
+    private final static String TOP_BASE_URL = "https://newsapi.org/v2/top-headlines?";
     private final static String API_KEY = BuildConfig.ApiKey;
+
     private String queryWithSettings;
     private String language;
     private String pageSize;
     private String sortBy;
     private String from;
     private String to;
-    //private boolean topNewsMode;
+    private boolean topNewsMode;
 
 
-    public Settings(String language, String pageSize, String sortBy, String from, String to) {
+    public Settings(String language, String pageSize, String sortBy, String from, String to, boolean topNewsMode) {
         this.language = language;
         this.pageSize = pageSize;
         this.sortBy = sortBy;
         this.from = from;
         this.to = to;
+        this.topNewsMode = topNewsMode;
     }
 
     //default settings
@@ -58,6 +61,7 @@ public class Settings implements Parcelable {
         this.sortBy = "Date";
         this.from = from;
         this.to = to;
+        this.topNewsMode = false;
     }
 
 
@@ -68,6 +72,7 @@ public class Settings implements Parcelable {
         sortBy = in.readString();
         from = in.readString();
         to = in.readString();
+        topNewsMode = in.readByte() != 0;
     }
 
     public static final Creator<Settings> CREATOR = new Creator<Settings>() {
@@ -122,37 +127,54 @@ public class Settings implements Parcelable {
         this.to = to;
     }
 
+    public boolean isTopNewsMode() {
+        return topNewsMode;
+    }
+
+    public void setTopNewsMode(boolean topNewsMode) {
+        this.topNewsMode = topNewsMode;
+    }
 
     public String applySettings(String query) {
 
         StringBuilder queryWithSettings = new StringBuilder();
 
-        queryWithSettings.append(BASE_URL);
+        if (!topNewsMode) {
+            queryWithSettings.append(BASE_URL);
 
-        queryWithSettings.append("language=" + language);
-        queryWithSettings.append("&");
+            queryWithSettings.append("language=" + language);
+            queryWithSettings.append("&");
+
+            String sortMethod = "publishedAt";
+
+            if (sortBy.equals("Popularité")) sortMethod = "popularity";
+            if (sortBy.equals("Pertinence")) sortMethod = "relevancy";
+            if (sortBy.equals("Date")) sortMethod = "publishedAt";
+
+            queryWithSettings.append("sortBy=" + sortMethod);
+            queryWithSettings.append("&");
+
+            if (from != "") {
+                queryWithSettings.append("from=" + from);
+                queryWithSettings.append("&");
+            }
+            if (to != "") {
+                queryWithSettings.append("to=" + to);
+                queryWithSettings.append("&");
+            }
+
+            queryWithSettings.append("q=" + query);
+            queryWithSettings.append("&");
+
+        } else {
+
+            queryWithSettings.append(TOP_BASE_URL);
+
+            queryWithSettings.append("country=" + language);
+            queryWithSettings.append("&");
+        }
 
         queryWithSettings.append("pageSize=" + pageSize);
-        queryWithSettings.append("&");
-
-        String sortMethod = "publishedAt";
-        if (sortBy.equals("Popularité")) sortMethod = "popularity";
-        if (sortBy.equals("Pertinence")) sortMethod = "relevancy";
-        if (sortBy.equals("Date")) sortMethod = "publishedAt";
-
-        queryWithSettings.append("sortBy=" + sortMethod);
-        queryWithSettings.append("&");
-
-        if (from != "") {
-            queryWithSettings.append("from=" + from);
-            queryWithSettings.append("&");
-        }
-        if (to != "") {
-            queryWithSettings.append("to=" + to);
-            queryWithSettings.append("&");
-        }
-
-        queryWithSettings.append("q=" + query);
         queryWithSettings.append("&");
         queryWithSettings.append("apiKey=" + API_KEY);
 
@@ -162,11 +184,13 @@ public class Settings implements Parcelable {
     @Override
     public String toString() {
         return "Settings{" +
-                "language='" + language + '\'' +
+                "queryWithSettings='" + queryWithSettings + '\'' +
+                ", language='" + language + '\'' +
                 ", pageSize='" + pageSize + '\'' +
                 ", sortBy='" + sortBy + '\'' +
                 ", from='" + from + '\'' +
                 ", to='" + to + '\'' +
+                ", topNewsMode=" + topNewsMode +
                 '}';
     }
 
@@ -183,6 +207,7 @@ public class Settings implements Parcelable {
         dest.writeString(sortBy);
         dest.writeString(from);
         dest.writeString(to);
+        dest.writeByte((byte) (topNewsMode ? 1 : 0));
     }
 
     public String getQueryWithSettings() {

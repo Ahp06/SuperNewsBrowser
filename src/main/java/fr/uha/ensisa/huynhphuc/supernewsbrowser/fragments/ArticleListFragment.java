@@ -9,6 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,16 +21,14 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.MainActivity;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.R;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Article;
+import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.Settings;
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.utils.ArticleImageDownload;
-
-import static android.widget.GridLayout.HORIZONTAL;
 
 public class ArticleListFragment extends Fragment {
 
@@ -46,7 +47,15 @@ public class ArticleListFragment extends Fragment {
 
         void requestWebsite(Article article);
 
+        void requestSavedList();
+
+        void requestSettings();
+
+        void requestHistory();
+
         Article getCopyInSaved(Article article);
+
+        Settings getSettings();
     }
 
     public ArticleListFragment() {
@@ -60,8 +69,8 @@ public class ArticleListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view;
+        setHasOptionsMenu(true);
         if (!mListener.getArticleList().isEmpty()) {
             view = inflater.inflate(R.layout.fragment_article_list, container, false);
         } else {
@@ -80,6 +89,30 @@ public class ArticleListFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.saved_item) {
+            mListener.requestSavedList();
+        }
+
+        if (item.getItemId() == R.id.settings_item) {
+            mListener.requestSettings();
+        }
+
+        if (item.getItemId() == R.id.history_item) {
+            mListener.requestHistory();
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -185,7 +218,7 @@ public class ArticleListFragment extends Fragment {
                     if (!mListener.isSaved(article, MainActivity.LIST_FRAGMENT)) {
                         mListener.requestSaveArticle(article);
                     }
-                    mListener.requestComment(article);
+                    mListener.requestComment(mListener.getCopyInSaved(article));
                 }
             });
 
@@ -216,6 +249,5 @@ public class ArticleListFragment extends Fragment {
             return mListener.getArticleList().size();
         }
     }
-
 
 }

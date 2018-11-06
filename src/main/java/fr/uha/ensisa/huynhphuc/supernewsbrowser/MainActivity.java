@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements
                         ArticleDao.Properties.Author.eq(article.getAuthor()))
                 .list();
 
+        Log.d("getCopy", "=" + queryCopy);
         if (queryCopy.size() == 1) return queryCopy.get(0);
 
         return null;
@@ -229,7 +230,6 @@ public class MainActivity extends AppCompatActivity implements
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Settings settings = new Settings();
 
-        //this.getSettings().setTopNewsMode(sharedPreferences.getBoolean("mode",false));
         String language = sharedPreferences.getString("language_list", settings.getLanguage());
         String pageSize = sharedPreferences.getString("pageSize_list", settings.getPageSize());
         String sortBy = sharedPreferences.getString("sortBy_list", settings.getSortBy());
@@ -239,13 +239,14 @@ public class MainActivity extends AppCompatActivity implements
         settings.setSortBy(sortBy);
         if (from != null) settings.setFrom(this.from);
         if (to != null) settings.setTo(this.to);
+        settings.setTopNewsMode(sharedPreferences.getBoolean("top_news_mode",false));
 
         return settings;
     }
 
     @Override
     public void update(String ID, String value) {
-        if (ID == "from") {
+        if (ID.equals("from")) {
             this.from = value;
         } else {
             this.to = value;

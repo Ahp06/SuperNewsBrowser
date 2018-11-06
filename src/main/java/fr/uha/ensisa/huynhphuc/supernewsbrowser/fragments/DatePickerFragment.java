@@ -76,13 +76,12 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onDateSet(DatePicker view, int year, int month, int day) {
         this.date = year + "-" + (month + 1) + "-" + day;
 
-        if (this.id == "from") {
+        if (this.id.equals("from")) {
             mListener.update("from", this.getDate());
             ((PrefsFragment) this.getFragmentManager()
                     .findFragmentById(R.id.fragment_container))
                     .findPreference("pref_select_from_date")
                     .setSummary(this.date);
-            //non persistent, faire un set value ou un put String avant
 
         } else {
             mListener.update("to", this.getDate());

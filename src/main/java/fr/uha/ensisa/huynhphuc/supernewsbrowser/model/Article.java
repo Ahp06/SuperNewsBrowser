@@ -58,7 +58,6 @@ public class Article implements Parcelable {
         this.description = articleJSON.optString("description");
         this.publishedAt = articleJSON.optString("publishedAt");
         this.url = articleJSON.optString("url");
-        this.comment = "";
     }
 
     protected Article(Parcel in) {
@@ -68,7 +67,7 @@ public class Article implements Parcelable {
         description = in.readString();
         publishedAt = in.readString();
         url = in.readString();
-        comment = "";
+        comment = in.readString();
     }
 
     @Keep
@@ -128,12 +127,14 @@ public class Article implements Parcelable {
     @Override
     public String toString() {
         return "Article{" +
+                "id=" + id +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
                 ", urlToImage='" + urlToImage + '\'' +
                 ", description='" + description + '\'' +
                 ", publishedAt='" + publishedAt + '\'' +
                 ", url='" + url + '\'' +
+                ", comment='" + comment + '\'' +
                 '}';
     }
 
@@ -150,6 +151,7 @@ public class Article implements Parcelable {
         dest.writeString(description);
         dest.writeString(publishedAt);
         dest.writeString(url);
+        dest.writeString(comment);
     }
 
     public Long getId() {

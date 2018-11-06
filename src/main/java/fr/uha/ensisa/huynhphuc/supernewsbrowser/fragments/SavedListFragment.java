@@ -50,6 +50,8 @@ public class SavedListFragment extends Fragment {
         void deleteArticlesToDelete();
 
         void clearSaved();
+
+        Article getCopyInSaved(Article article);
     }
 
 
@@ -211,7 +213,7 @@ public class SavedListFragment extends Fragment {
             viewHolder.comment_button_saved.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.requestComment(article);
+                    mListener.requestComment(mListener.getCopyInSaved(article));
                 }
             });
 

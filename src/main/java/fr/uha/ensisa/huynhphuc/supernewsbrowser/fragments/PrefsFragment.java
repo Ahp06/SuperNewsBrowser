@@ -126,7 +126,7 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
         //Load preferences xml file
         setPreferencesFromResource(R.xml.preferences, s);
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-        Settings settings = mListener.getSettings();
+        final Settings settings = mListener.getSettings();
 
         Preference fromPref = (Preference) findPreference("pref_select_from_date");
         Preference toPref = (Preference) findPreference("pref_select_to_date");
@@ -147,6 +147,12 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
         fromPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                try {
+                    datepicker_from = new DatePickerFragment("from",
+                            sharedPreferences.getString("from", settings.getFrom()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 datepicker_from.show(getFragmentManager(), "datepicker");
                 return false;
             }
@@ -155,6 +161,12 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
         toPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                try {
+                    datepicker_to = new DatePickerFragment("to",
+                            sharedPreferences.getString("to", settings.getTo()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 datepicker_to.show(getFragmentManager(), "datepicker");
                 return false;
             }

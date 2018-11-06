@@ -71,9 +71,11 @@ public class HomeFragment extends Fragment {
 
         @Override
         public void onPostExecute(String msg) {
-            final EditText editText = (EditText) root.findViewById(R.id.query);
+            if (!mListener.getSettings().isTopNewsMode()) {
+                final EditText editText = (EditText) root.findViewById(R.id.query);
+                editText.getText().clear();
+            }
             mListener.requestArticleList();
-            editText.getText().clear();
         }
 
         /***
@@ -161,6 +163,10 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    public void executeTopNewsWithSettings() {
+        new ArticleHttpRequest().execute(mListener.getSettings().applySettings(""));
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -191,7 +197,6 @@ public class HomeFragment extends Fragment {
                 executeQueryWithSettings();
             }
         });
-
 
         return root;
     }
