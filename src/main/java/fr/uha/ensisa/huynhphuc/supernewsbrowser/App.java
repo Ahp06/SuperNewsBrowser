@@ -10,6 +10,7 @@ import fr.uha.ensisa.huynhphuc.supernewsbrowser.model.DaoSession;
 public class App extends Application {
 
     private DaoSession daoSession;
+    private final boolean clean_database = false;
 
     @Override
     public void onCreate() {
@@ -20,8 +21,10 @@ public class App extends Application {
         Database db = helper.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
 
-        //DaoMaster.dropAllTables(getDaoSession().getDatabase(), true);
-        //DaoMaster.createAllTables(getDaoSession().getDatabase(), true);
+        if(clean_database){
+            DaoMaster.dropAllTables(getDaoSession().getDatabase(), true);
+            DaoMaster.createAllTables(getDaoSession().getDatabase(), true);
+        }
 
     }
 

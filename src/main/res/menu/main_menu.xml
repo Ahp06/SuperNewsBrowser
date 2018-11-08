@@ -6,6 +6,12 @@
     tools:ignore="AlwaysShowAction">
 
     <item
+        android:id="@+id/top_news_item"
+        android:icon="@drawable/ic_flame"
+        android:title="Top news"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/saved_item"
         android:icon="@drawable/ic_save_black_24dp"
         android:title="Saved"

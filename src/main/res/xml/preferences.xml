@@ -2,13 +2,6 @@
     android:title="@string/root_title">
 
     <PreferenceCategory>
-        <CheckBoxPreference
-            android:key="top_news_mode"
-            android:summary="@string/summary_mode_preference"
-            android:title="@string/title_mode_preference" />
-    </PreferenceCategory>
-
-    <PreferenceCategory>
         <ListPreference
             android:dialogTitle="@string/dialog_title_language_list"
             android:entries="@array/language_array"

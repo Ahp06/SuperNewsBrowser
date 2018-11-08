@@ -5,6 +5,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Date;
+
 @Entity
 public class History {
 
@@ -14,14 +16,19 @@ public class History {
     @Property(nameInDb = "QUERY")
     private String query;
 
-    public History(String query){
+    @Property(nameInDb = "DATE")
+    private String date;
+
+    public History(String query, String date){
         this.query = query;
+        this.date = date;
     }
 
-    @Generated(hash = 2104745400)
-    public History(Long id, String query) {
+    @Generated(hash = 1173401740)
+    public History(Long id, String query, String date) {
         this.id = id;
         this.query = query;
+        this.date = date;
     }
 
     @Generated(hash = 869423138)
@@ -43,5 +50,15 @@ public class History {
     public void setQuery(String query) {
         this.query = query;
     }
+
+    public String getDate() {
+        return this.date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+
 
 }

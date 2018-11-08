@@ -56,18 +56,6 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
                 datePref.setVisible(false);
             }
         }
-
-        if(key.equals("top_news_mode")){
-            boolean topNews = sharedPreferences.getBoolean("top_news_mode",false);
-            if(topNews){
-                datePref.setVisible(false);
-                sortBy.setVisible(false);
-            } else {
-                datePref.setVisible(true);
-                sortBy.setVisible(true);
-            }
-        }
-
     }
 
     @Override
@@ -189,6 +177,7 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
     }
 
 }

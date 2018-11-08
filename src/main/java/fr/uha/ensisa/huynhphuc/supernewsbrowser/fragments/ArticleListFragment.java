@@ -1,9 +1,11 @@
 package fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.menu.MenuItemWrapperICS;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -92,6 +94,7 @@ public class ArticleListFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
+        ((MenuItem) menu.findItem(R.id.top_news_item)).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

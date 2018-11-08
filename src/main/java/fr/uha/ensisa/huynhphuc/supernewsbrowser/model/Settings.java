@@ -2,6 +2,7 @@ package fr.uha.ensisa.huynhphuc.supernewsbrowser.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import org.greenrobot.greendao.annotation.Entity;
 
@@ -27,16 +28,13 @@ public class Settings implements Parcelable {
     private String sortBy;
     private String from;
     private String to;
-    private boolean topNewsMode;
 
-
-    public Settings(String language, String pageSize, String sortBy, String from, String to, boolean topNewsMode) {
+    public Settings(String language, String pageSize, String sortBy, String from, String to) {
         this.language = language;
         this.pageSize = pageSize;
         this.sortBy = sortBy;
         this.from = from;
         this.to = to;
-        this.topNewsMode = topNewsMode;
     }
 
     //default settings
@@ -61,7 +59,6 @@ public class Settings implements Parcelable {
         this.sortBy = "Date";
         this.from = from;
         this.to = to;
-        this.topNewsMode = false;
     }
 
 
@@ -72,7 +69,6 @@ public class Settings implements Parcelable {
         sortBy = in.readString();
         from = in.readString();
         to = in.readString();
-        topNewsMode = in.readByte() != 0;
     }
 
     public static final Creator<Settings> CREATOR = new Creator<Settings>() {
@@ -127,19 +123,11 @@ public class Settings implements Parcelable {
         this.to = to;
     }
 
-    public boolean isTopNewsMode() {
-        return topNewsMode;
-    }
-
-    public void setTopNewsMode(boolean topNewsMode) {
-        this.topNewsMode = topNewsMode;
-    }
-
     public String applySettings(String query) {
 
         StringBuilder queryWithSettings = new StringBuilder();
 
-        if (!topNewsMode) {
+        if (!query.equals("")) {
             queryWithSettings.append(BASE_URL);
 
             queryWithSettings.append("language=" + language);
@@ -178,6 +166,8 @@ public class Settings implements Parcelable {
         queryWithSettings.append("&");
         queryWithSettings.append("apiKey=" + API_KEY);
 
+        Log.d("Query", " = " +queryWithSettings.toString());
+
         return queryWithSettings.toString();
     }
 
@@ -190,7 +180,6 @@ public class Settings implements Parcelable {
                 ", sortBy='" + sortBy + '\'' +
                 ", from='" + from + '\'' +
                 ", to='" + to + '\'' +
-                ", topNewsMode=" + topNewsMode +
                 '}';
     }
 
@@ -207,7 +196,6 @@ public class Settings implements Parcelable {
         dest.writeString(sortBy);
         dest.writeString(from);
         dest.writeString(to);
-        dest.writeByte((byte) (topNewsMode ? 1 : 0));
     }
 
     public String getQueryWithSettings() {

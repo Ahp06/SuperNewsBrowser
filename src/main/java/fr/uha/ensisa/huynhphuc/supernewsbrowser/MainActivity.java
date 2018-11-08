@@ -14,7 +14,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import fr.uha.ensisa.huynhphuc.supernewsbrowser.fragments.ArticleListFragment;
@@ -244,7 +246,6 @@ public class MainActivity extends AppCompatActivity implements
         settings.setSortBy(sortBy);
         if (from != null) settings.setFrom(this.from);
         if (to != null) settings.setTo(this.to);
-        settings.setTopNewsMode(sharedPreferences.getBoolean("top_news_mode",false));
 
         return settings;
     }
@@ -319,8 +320,15 @@ public class MainActivity extends AppCompatActivity implements
      * @param query
      */
     @Override
-    public void addIntoHistory(String query) {
-        this.historyDao.insert(new History(query));
+    public void addIntoHistory(String query) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String date = formatter.format(new Date());
+        this.historyDao.insert(new History(query,date));
+    }
+
+    @Override
+    public void requestTopNews() {
+
     }
 
     /**

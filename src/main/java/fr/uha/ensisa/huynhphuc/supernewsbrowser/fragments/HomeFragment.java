@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -71,11 +72,8 @@ public class HomeFragment extends Fragment {
 
         @Override
         public void onPostExecute(String msg) {
-            if (!mListener.getSettings().isTopNewsMode()) {
-                final EditText editText = (EditText) root.findViewById(R.id.query);
-                editText.getText().clear();
-            }
-            mListener.requestArticleList();
+            final EditText editText = (EditText) root.findViewById(R.id.query);
+            editText.getText().clear();
         }
 
         /***
@@ -136,7 +134,9 @@ public class HomeFragment extends Fragment {
 
         void requestHistory();
 
-        void addIntoHistory(String query);
+        void addIntoHistory(String query) throws ParseException;
+
+        void requestTopNews();
     }
 
     public HomeFragment() {
@@ -156,7 +156,11 @@ public class HomeFragment extends Fragment {
         if (!this.query.getText().toString().equals("")) {
             String query = this.query.getText().toString();
             Log.d("NewsBrowser", "Query = " + query);
-            mListener.addIntoHistory(query);
+            try {
+                mListener.addIntoHistory(query);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             new ArticleHttpRequest().execute(mListener.getSettings().applySettings(query));
         } else {
             Toast.makeText(this.getContext(), R.string.empty_query, Toast.LENGTH_SHORT).show();
@@ -209,6 +213,11 @@ public class HomeFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.top_news_item) {
+            new ArticleHttpRequest().execute(mListener.getSettings().applySettings(""));
+            mListener.requestArticleList();
+        }
 
         if (item.getItemId() == R.id.saved_item) {
             mListener.requestSavedList();

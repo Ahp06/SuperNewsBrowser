@@ -47,23 +47,22 @@ public class HistoryFragment extends Fragment {
         setHasOptionsMenu(true);
 
         List<History> history = mListener.getHistory();
-        List<String> queries = new ArrayList<String>();
+        List<String> queries_info = new ArrayList<String>();
         for(int i = 0; i < history.size() ; i ++){
-            queries.add(history.get(i).getQuery());
+            queries_info.add(history.get(i).getQuery() + "  " + history.get(i).getDate());
         }
 
         this.lv_history = (ListView) view.findViewById(R.id.history);
         this.emptyText = (TextView) view.findViewById(R.id.empty_history);
 
-        if (!queries.isEmpty()) {
-            this.adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, queries);
+        if (!queries_info.isEmpty()) {
+            this.adapter = new ArrayAdapter<String>(view.getContext(), android.R.layout.simple_list_item_1, queries_info);
             lv_history.setAdapter(adapter);
             lv_history.setVisibility(View.VISIBLE);
             emptyText.setVisibility(View.INVISIBLE);
         } else {
             lv_history.setVisibility(View.INVISIBLE);
             emptyText.setVisibility(View.VISIBLE);
-            //lv_history.setEmptyView(emptyText);
         }
 
         return view;
