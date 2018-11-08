@@ -158,6 +158,7 @@ public class Settings implements Parcelable {
 
             queryWithSettings.append(TOP_BASE_URL);
 
+            if (language.equals("en")) language = "us";
             queryWithSettings.append("country=" + language);
             queryWithSettings.append("&");
         }

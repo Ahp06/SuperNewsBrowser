@@ -97,7 +97,7 @@ public class PrefsFragment extends PreferenceFragmentCompat implements
         toPref.setSummary(settings.getTo());
 
         Preference datePref = findPreference("pref_date_choice");
-        String sort = sharedPreferences.getString("sortBy_list","");
+        String sort = sharedPreferences.getString("sortBy_list","Date");
 
         if(sort.equals("Date")){
             datePref.setVisible(true);
