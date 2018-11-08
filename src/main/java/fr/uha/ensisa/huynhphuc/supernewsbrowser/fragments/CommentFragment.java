@@ -25,6 +25,7 @@ public class CommentFragment extends Fragment {
         boolean isSaved(Article article, int fragment);
         void requestSaveArticle(Article article);
         void requestCancelSave(Article article);
+        void updateSavedDao(Article article);
     }
 
     public CommentFragment() {
@@ -84,6 +85,7 @@ public class CommentFragment extends Fragment {
                 } else {
                     mListener.requestCancelSave(article);
                 }
+                mListener.updateSavedDao(article);
                 getFragmentManager().popBackStack();
             }
         });
@@ -99,6 +101,7 @@ public class CommentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 article.setComment(""); // OU null ?
+                mListener.updateSavedDao(article);
                 getFragmentManager().popBackStack();
                 Toast.makeText(v.getContext(), R.string.delete_comment_text, Toast.LENGTH_SHORT).show();
             }

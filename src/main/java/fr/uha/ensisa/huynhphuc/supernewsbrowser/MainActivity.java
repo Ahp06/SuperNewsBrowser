@@ -183,6 +183,11 @@ public class MainActivity extends AppCompatActivity implements
         this.savedArticleDao.deleteByKey(ID);
     }
 
+    @Override
+    public void updateSavedDao(Article article) {
+        this.savedArticleDao.update(article);
+    }
+
     /**
      * Switch to CommentFragment
      *
