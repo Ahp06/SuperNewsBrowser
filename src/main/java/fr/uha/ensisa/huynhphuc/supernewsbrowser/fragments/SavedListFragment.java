@@ -224,10 +224,20 @@ public class SavedListFragment extends Fragment {
                 }
             });
 
+            //Is commented
             if (article.getComment() != "" && article.getComment() != null) {
                 viewHolder.comment_button_saved.setText(R.string.see_comment);
             } else {
                 viewHolder.comment_button_saved.setText(R.string.comment_text);
+            }
+
+            //Is into toDelete
+            // An article "not saved" visible in saved list means that he is in
+            // the toDelete list
+            if (!mListener.isSaved(article, MainActivity.SAVED_FRAGMENT)) {
+                viewHolder.delete_button.setText(R.string.cancel_delete_text);
+            } else {
+                viewHolder.delete_button.setText(R.string.delete_text);
             }
 
         }

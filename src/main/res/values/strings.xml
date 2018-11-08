@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Super News Browser</string>
+    <string name="app_name">News Browser</string>
     <string name="title_activity_articles">ArticlesActivity</string>
     <string name="action_search">action_search</string>
     <string name="queryHint"> Entrez votre recherche </string>
