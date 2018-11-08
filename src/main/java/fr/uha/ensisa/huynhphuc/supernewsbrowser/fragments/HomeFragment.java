@@ -74,6 +74,7 @@ public class HomeFragment extends Fragment {
         public void onPostExecute(String msg) {
             final EditText editText = (EditText) root.findViewById(R.id.query);
             editText.getText().clear();
+            mListener.requestArticleList();
         }
 
         /***
@@ -135,8 +136,6 @@ public class HomeFragment extends Fragment {
         void requestHistory();
 
         void addIntoHistory(String query) throws ParseException;
-
-        void requestTopNews();
     }
 
     public HomeFragment() {
@@ -216,7 +215,6 @@ public class HomeFragment extends Fragment {
 
         if (item.getItemId() == R.id.top_news_item) {
             new ArticleHttpRequest().execute(mListener.getSettings().applySettings(""));
-            mListener.requestArticleList();
         }
 
         if (item.getItemId() == R.id.saved_item) {

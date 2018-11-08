@@ -326,11 +326,6 @@ public class MainActivity extends AppCompatActivity implements
         this.historyDao.insert(new History(query,date));
     }
 
-    @Override
-    public void requestTopNews() {
-
-    }
-
     /**
      * If saved list isn't empty return all the saved articles list,
      * or an empty arraylist if empty
