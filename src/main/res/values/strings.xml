@@ -168,5 +168,7 @@
     <string name="pref_select_to_date">Date de fin</string>
     <string name="from_date_summary" />
     <string name="to_date_summary" />
+    <string name="comment_fragment_title">Votre avis :</string>
+    <string name="save_toast">Article sauvegardé</string>
 
 </resources>

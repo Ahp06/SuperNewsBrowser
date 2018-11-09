@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void requestSaveArticle(Article article) {
         this.savedArticleDao.insert(article);
+        Toast.makeText(this,R.string.save_toast,Toast.LENGTH_LONG).show();
     }
 
     /**
